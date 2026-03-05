@@ -80,7 +80,7 @@ final class TailwindTheme implements ThemeContract
             'results-count' => 'text-sm text-gray-500 text-center sm:text-left',
             'pagination-nav' => 'flex justify-center sm:justify-end',
             'filter-clear-wrapper' => 'pt-3 mt-3 border-t border-gray-100',
-            'filter-clear-btn' => 'w-full inline-flex items-center justify-center rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100 transition-colors',
+            'filter-clear-btn' => 'w-full inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 lt-hover-theme transition-colors',
             'bulk-btn' => 'w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-lg bg-gray-100 border border-gray-200 px-3 py-2 text-sm font-medium text-gray-400 cursor-default select-none',
             'bulk-btn-active' => 'w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-lg border lt-border-400 lt-bg-50 px-3 py-2 text-sm font-medium lt-text-700 cursor-pointer transition-colors lt-hover-bg-100',
             'bulk-badge' => 'inline-flex items-center justify-center rounded-full lt-bg-600 px-1.5 text-[10px] font-bold text-white min-w-[18px] leading-[18px]',

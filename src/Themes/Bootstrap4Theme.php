@@ -28,7 +28,7 @@ final class Bootstrap4Theme implements ThemeContract
     {
         return [
             'container' => 'card shadow-sm',
-            'toolbar' => 'card-header bg-white py-3 px-3',
+            'toolbar' => 'bg-white py-3 px-3 border-bottom rounded-top',
             'toolbar-row' => 'd-flex flex-column flex-sm-row align-items-stretch align-items-sm-center lt-flex-gap-2',
             'toolbar-left' => 'd-flex flex-column flex-sm-row align-items-stretch align-items-sm-center lt-flex-gap-2 flex-sm-grow-1',
             'toolbar-right' => 'd-flex flex-column flex-sm-row align-items-stretch align-items-sm-center lt-flex-gap-2',

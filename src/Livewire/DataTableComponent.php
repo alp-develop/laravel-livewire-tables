@@ -126,6 +126,10 @@ abstract class DataTableComponent extends Component
         }
 
         $this->build();
+
+        if ($this->hasActiveFilters()) {
+            $this->dispatchFiltersChanged();
+        }
     }
 
     public function updatedTableFilters(mixed $value, ?string $key): void
@@ -148,7 +152,7 @@ abstract class DataTableComponent extends Component
             if (
                 $filter instanceof SelectFilter
                 && $filter->hasDependency()
-                && $this->resolveParentFieldFromKey($filter->getParent() ?? '') === $key
+                && $filter->getParent() === $filterKey
             ) {
                 $this->tableFilters[$filter->getKey()] = '';
             }

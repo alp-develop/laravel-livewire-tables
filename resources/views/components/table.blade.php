@@ -1,8 +1,36 @@
 <div class="{{ $classes['container'] }}">
     @include('livewire-tables::components.styles')
-    @if(count($activeFilters) > 0 || count($sortChips) > 0)
-        @include('livewire-tables::components.filter-chips')
-    @endif
+    @once
+    <script>
+    document.addEventListener('livewire:init', function() {
+        if (!window.__ltFilterState) window.__ltFilterState = {};
+        // Save ALL open filter panel and dropdown states BEFORE any Livewire request
+        Livewire.hook('commit', ({component, commit, respond, succeed, fail}) => {
+            document.querySelectorAll('[wire\\:key="lt-filter-toggle"]').forEach(function(el) {
+                if (el._x_dataStack && el._x_dataStack[0] && el._x_dataStack[0].open === true) {
+                    var tk = el.getAttribute('data-lt-table-key');
+                    if (tk) {
+                        window.__ltFilterState[tk] = true;
+                    }
+                }
+            });
+            document.querySelectorAll('[wire\\:key^="filter-"]').forEach(function(el) {
+                if (el._x_dataStack && el._x_dataStack[0] && el._x_dataStack[0].open === true) {
+                    var wk = el.getAttribute('wire:key');
+                    if (wk) {
+                        window.__ltFilterState['lt-ms-' + wk.replace('filter-', '')] = true;
+                    }
+                }
+            });
+        });
+    });
+    </script>
+    @endonce
+    <div wire:key="lt-chip-section">
+        @if(count($activeFilters) > 0 || count($sortChips) > 0)
+            @include('livewire-tables::components.filter-chips')
+        @endif
+    </div>
 
     <div class="{{ $classes['toolbar'] }}">
         <div class="{{ $classes['toolbar-row'] }}">
@@ -13,7 +41,23 @@
                 </div>
 
                 @if(count($filters) > 0)
-                    <div class="{{ $classes['toolbar-item'] }}" x-data="{ open: false }" @click.outside="open = false">
+                    <div wire:key="lt-filter-toggle"
+                         data-lt-table-key="{{ $this->getTableKey() }}"
+                         class="{{ $classes['toolbar-item'] }}"
+                         x-data="{
+                            open: false,
+                            init() {
+                                if (!window.__ltFilterState) window.__ltFilterState = {};
+                                let tk = this.$el.getAttribute('data-lt-table-key') || 'unknown';
+                                if (window.__ltFilterState[tk] === true) {
+                                    this.open = true;
+                                }
+                                this.$watch('open', (val) => {
+                                    window.__ltFilterState[tk] = val;
+                                });
+                            }
+                         }"
+                         @click.outside="open = false">
                         <button
                             @click="open = !open"
                             type="button"
@@ -32,7 +76,8 @@
                             x-cloak
                             x-transition
                             class="{{ $classes['filter-dropdown'] }} lt-filter-panel"
-                            style="width:min(22rem, calc(100vw - 2rem));max-height:70vh;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none"
+                            style="min-width:22rem;scrollbar-width:none;-ms-overflow-style:none"
+                            @click.stop="$dispatch('lt-dropdown-opened', 'panel')"
                         >
                             @include('livewire-tables::components.filters')
                         </div>
@@ -44,7 +89,7 @@
             <div class="{{ $classes['toolbar-right'] }}">
                 {!! $this->resolveSlot($this->toolbarRightPrepend()) !!}
                 @if($this->hasBulkActions())
-                <div class="{{ $classes['toolbar-item'] }}" x-data="{ open: false }" @click.outside="open = false">
+                <div wire:key="lt-bulk-toggle" class="{{ $classes['toolbar-item'] }}" x-data="{ open: false }" @click.outside="open = false">
                     <button
                         @click="($wire.selectedIds.length > 0 || $wire.selectAllPages) ? open = !open : null"
                         type="button"
@@ -78,7 +123,7 @@
                     </div>
                 </div>
                 @endif
-                <div class="{{ $classes['toolbar-item'] }}" x-data="{ open: false }" @click.outside="open = false">
+                <div wire:key="lt-column-toggle" class="{{ $classes['toolbar-item'] }}" x-data="{ open: false }" @click.outside="open = false">
                     <button @click="open = !open" type="button" class="{{ $columnBtnClass }}">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px">
                             <path d="M15 3.75H9v16.5h6V3.75zM16.5 3.75v16.5h3.75a.75.75 0 00.75-.75V4.5a.75.75 0 00-.75-.75H16.5zM7.5 3.75H3.75a.75.75 0 00-.75.75v15c0 .414.336.75.75.75H7.5V3.75z" />

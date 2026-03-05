@@ -28,7 +28,7 @@ final class Bootstrap5Theme implements ThemeContract
     {
         return [
             'container' => 'card shadow-sm',
-            'toolbar' => 'card-header bg-white py-3 px-3',
+            'toolbar' => 'bg-white py-3 px-3 border-bottom rounded-top',
             'toolbar-row' => 'd-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2',
             'toolbar-left' => 'd-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 flex-sm-grow-1',
             'toolbar-right' => 'd-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2',
@@ -80,7 +80,7 @@ final class Bootstrap5Theme implements ThemeContract
             'results-count' => 'text-muted small text-center text-sm-start',
             'pagination-nav' => 'd-flex justify-content-center justify-content-sm-end',
             'filter-clear-wrapper' => 'pt-2 mt-2 border-top',
-            'filter-clear-btn' => 'd-flex align-items-center justify-content-center w-100 bg-danger bg-opacity-10 text-danger border-0 rounded-2 px-3 py-2 small fw-medium',
+            'filter-clear-btn' => 'btn lt-btn-neutral d-flex w-100 align-items-center justify-content-center gap-1 small fw-medium',
             'bulk-btn' => 'btn lt-btn-neutral-disabled d-flex w-100 align-items-center justify-content-center gap-1 pe-none',
             'bulk-btn-active' => 'btn lt-btn-neutral-active d-flex w-100 align-items-center justify-content-center gap-1',
             'bulk-badge' => 'badge lt-badge-primary rounded-pill fw-bold ms-1',

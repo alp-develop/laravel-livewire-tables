@@ -1,4 +1,5 @@
 <div
+    wire:key="filter-{{ $filter->getKey() }}"
     x-data="{
         instance: null,
         selected: [],
@@ -64,8 +65,8 @@
             }
         }
     }"
-    x-on:remove-filter.window="if ($event.detail && $event.detail.field === '{{ $filter->getKey() }}' && instance) { instance.clear(); selected = []; committed = []; }"
-    x-on:livewire-tables:clear-filters.window="if (instance) { instance.clear(); selected = []; committed = []; }"
+    x-on:remove-filter.window="if ($event.detail && $event.detail.field === '{{ $filter->getKey() }}' && instance) { instance.clear(); selected = []; committed = []; $wire.set('tableFilters.{{ $filter->getKey() }}', []) }"
+    x-on:livewire-tables:clear-filters.window="if (instance) { instance.clear(); selected = []; committed = []; } $wire.set('tableFilters.{{ $filter->getKey() }}', [])"
     style="position:relative"
 >
     <span style="position:absolute;left:0.625rem;top:50%;transform:translateY(-50%);pointer-events:none;display:flex;align-items:center;color:#9ca3af;z-index:1">

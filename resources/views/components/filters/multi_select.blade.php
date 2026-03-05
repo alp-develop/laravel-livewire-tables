@@ -6,6 +6,7 @@ $allOptions = collect(
 )->map(fn($label, $key) => ['value' => (string) $key, 'label' => (string) $label])->values()->toArray();
 @endphp
 <div
+    wire:key="filter-{{ $filter->getKey() }}"
     x-data="{
         options: {{ Js::from($allOptions) }},
         search: '',
@@ -13,10 +14,19 @@ $allOptions = collect(
         committed: [],
         open: false,
         hovered: null,
+        _uid: '{{ $filter->getKey() }}-' + Math.random().toString(36).substr(2, 9),
         init() {
             let stored = this.$wire.get('tableFilters.{{ $filter->getKey() }}');
             this.selected = Array.isArray(stored) ? stored.map(String) : [];
             this.committed = [...this.selected];
+            if (!window.__ltFilterState) window.__ltFilterState = {};
+            let sk = 'lt-ms-{{ $filter->getKey() }}';
+            if (window.__ltFilterState[sk] === true) {
+                this.open = true;
+            }
+            this.$watch('open', (val) => {
+                window.__ltFilterState[sk] = val;
+            });
         },
         toggle(value) {
             let idx = this.selected.indexOf(value);
@@ -55,15 +65,16 @@ $allOptions = collect(
             return base;
         }
     }"
-    x-on:remove-filter.window="if ($event.detail && $event.detail.field === '{{ $filter->getKey() }}') { clear() }"
-    x-on:livewire-tables:clear-filters.window="clear(); open = false"
+    x-on:remove-filter.window="if ($event.detail && $event.detail.field === '{{ $filter->getKey() }}') { clear(); $wire.set('tableFilters.{{ $filter->getKey() }}', []) }"
+    x-on:livewire-tables:clear-filters.window="clear(); $wire.set('tableFilters.{{ $filter->getKey() }}', []); open = false"
+    x-on:lt-dropdown-opened.window="if ($event.detail !== _uid) { open = false }"
     @click.outside="open = false"
     style="position:relative"
 >
     <div style="position:relative">
         <button
             type="button"
-            x-on:click.stop="open = !open"
+            x-on:click.stop="$dispatch('lt-dropdown-opened', _uid); open = !open"
             class="{{ $resolvedInputClass }}"
             style="width:100%;text-align:left;cursor:pointer;padding-right:3.25rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"
         >
@@ -110,7 +121,7 @@ $allOptions = collect(
             />
         </div>
         @endif
-        <div style="max-height:11rem;overflow-y:auto">
+        <div style="max-height:14.3rem;overflow-y:auto">
             <template x-for="opt in filteredOptions()" :key="opt.value">
                 <div
                     x-on:click="toggle(opt.value)"

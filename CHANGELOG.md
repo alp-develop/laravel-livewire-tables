@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-03-05
+
+### Fixed
+
+- **Filter panel closes on interaction in hidden containers**: Filter dropdowns now remain open when interacting with filters inside tabs, modals, or accordions. Uses `Livewire.hook('commit')` to persist Alpine state across component re-renders triggered by parent morphs.
+- **Dependent filter clearing**: `removeFilter()` now properly clears child filters that depend on the removed parent filter. Fixed comparison bug in `updatedTableFilters()` where field name was incorrectly compared to filter key.
+- **Text filter debounce**: Text filters now use `wire:model.live.debounce.500ms` instead of instant updates, with a clear (X) button.
+- **Initial filter dispatch**: Tables with `initialValue()` filters now dispatch `table-filters-applied` on mount so parent components receive the initial filter state.
+- **Multi-select dropdown persistence**: Multi-select filter dropdowns now stay open after toggling options, using the same state persistence mechanism.
+- **Only one dropdown open at a time**: Opening a select/multi-select/boolean filter dropdown now closes any other open dropdown via `lt-dropdown-opened` event.
+- **Clear All filters bug**: Clicking "Clear All" now correctly clears all filters on the first click.
+- **Filter dropdown closes on first apply**: The filter dropdown no longer closes when applying the first filter on a page. Added `wire:key` to all filter blade components.
+
+### Changed
+
+- **Clear All button style**: Now uses the same neutral theme style as the Columns button instead of the red danger style.
+- **Select dropdown height**: Increased max-height of select/multi-select/boolean dropdowns from 11rem to 14.3rem (30% taller).
+- **Filter panel width**: Filter panel now uses `min-width:22rem` for a more comfortable layout.
+- **Bootstrap 4 & 5 toolbar**: Removed `card-header` class, now uses `rounded-top` with `border-bottom` for cleaner styling.
+
+---
+
 ## [1.0.0] - 2026-03-04
 
 ### Added

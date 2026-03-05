@@ -22,19 +22,12 @@ $wireKey = $filter->hasDependency()
         selected: '',
         open: false,
         hovered: null,
+        _uid: '{{ $filter->getKey() }}-' + Math.random().toString(36).substr(2, 9),
         init() {
-            @if($filter->hasDependency())
-            {{-- When parent changes, wire:key changes → component re-inits → always clear child --}}
-            let current = this.$wire.get('tableFilters.{{ $filter->getKey() }}') ?? '';
-            if (current !== '' && current !== null) {
-                this.selected = '';
-                this.$wire.set('tableFilters.{{ $filter->getKey() }}', '');
-            }
-            @else
             this.selected = String(this.$wire.get('tableFilters.{{ $filter->getKey() }}') ?? '');
-            @endif
         },
         select(value) {
+
             this.selected = value;
             this.search = '';
             this.open = false;
@@ -60,13 +53,14 @@ $wireKey = $filter->hasDependency()
             return base;
         }
     }"
-    x-on:remove-filter.window="if ($event.detail && $event.detail.field === '{{ $filter->getKey() }}') { clear() }"
-    x-on:livewire-tables:clear-filters.window="clear(); open = false"
+    x-on:remove-filter.window="if ($event.detail && $event.detail.field === '{{ $filter->getKey() }}') { clear(); $wire.set('tableFilters.{{ $filter->getKey() }}', '') }"
+    x-on:livewire-tables:clear-filters.window="clear(); $wire.set('tableFilters.{{ $filter->getKey() }}', ''); open = false"
+    x-on:lt-dropdown-opened.window="if ($event.detail !== _uid) { open = false; search = '' }"
     @click.outside="open = false; search = ''"
     style="position:relative"
 >
     <button type="button"
-        x-on:click.stop="{{ $isDisabled ? '' : 'open = !open' }}"
+        x-on:click.stop="{{ $isDisabled ? '' : '$dispatch(\'lt-dropdown-opened\', _uid); open = !open' }}"
         class="{{ $resolvedSelectClass }}"
         style="width:100%;text-align:left;cursor:{{ $isDisabled ? 'default' : 'pointer' }};padding-right:3rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis{{ $isDisabled ? ';opacity:0.5' : '' }}"
     >
@@ -91,7 +85,7 @@ $wireKey = $filter->hasDependency()
             />
         </div>
         @endif
-        <div style="max-height:11rem;overflow-y:auto">
+        <div style="max-height:14.3rem;overflow-y:auto">
             <template x-for="opt in filteredOptions()" :key="opt.value">
                 <div x-on:click="select(opt.value)"
                     x-on:mouseenter="hovered = opt.value"

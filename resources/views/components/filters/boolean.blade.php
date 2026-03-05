@@ -1,4 +1,5 @@
 <div
+    wire:key="filter-{{ $filter->getKey() }}"
     x-data="{
         options: [
             { value: '1', label: '{{ __('livewire-tables::messages.yes') }}' },
@@ -7,6 +8,7 @@
         selected: '',
         open: false,
         hovered: null,
+        _uid: '{{ $filter->getKey() }}-' + Math.random().toString(36).substr(2, 9),
         init() {
             let v = this.$wire.get('tableFilters.{{ $filter->getKey() }}');
             this.selected = (v !== null && v !== undefined && v !== '') ? String(v) : '';
@@ -30,12 +32,13 @@
             return base;
         }
     }"
-    x-on:remove-filter.window="if ($event.detail && $event.detail.field === '{{ $filter->getKey() }}') { clear() }"
-    x-on:livewire-tables:clear-filters.window="clear(); open = false"
+    x-on:remove-filter.window="if ($event.detail && $event.detail.field === '{{ $filter->getKey() }}') { clear(); $wire.set('tableFilters.{{ $filter->getKey() }}', '') }"
+    x-on:livewire-tables:clear-filters.window="clear(); $wire.set('tableFilters.{{ $filter->getKey() }}', ''); open = false"
+    x-on:lt-dropdown-opened.window="if ($event.detail !== _uid) { open = false }"
     @click.outside="open = false"
     style="position:relative"
 >
-    <button type="button" x-on:click.stop="open = !open"
+    <button type="button" x-on:click.stop="$dispatch('lt-dropdown-opened', _uid); open = !open"
         class="{{ $resolvedSelectClass }}"
         style="width:100%;text-align:left;cursor:pointer;padding-right:3rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"
     >
@@ -52,7 +55,7 @@
     <div x-show="open" x-cloak x-transition @click.stop
         style="position:absolute;left:0;right:0;z-index:9999;margin-top:0.25rem;background:white;border:1px solid #e5e7eb;border-radius:0.375rem;box-shadow:0 4px 6px -1px rgba(0,0,0,.1);overflow:hidden"
     >
-        <div style="max-height:11rem;overflow-y:auto">
+        <div style="max-height:14.3rem;overflow-y:auto">
             <div x-on:click="select('')"
                 x-on:mouseenter="hovered = ''"
                 x-on:mouseleave="hovered = null"

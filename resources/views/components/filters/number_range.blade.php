@@ -1,4 +1,5 @@
 <div
+    wire:key="filter-{{ $filter->getKey() }}"
     x-data="{
         minVal: '',
         maxVal: '',

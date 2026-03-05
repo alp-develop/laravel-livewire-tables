@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Livewire\Tables\Livewire\Concerns;
 
+use Livewire\Tables\Filters\SelectFilter;
+
 trait HasFilters
 {
     /** @var array<string, mixed> */
@@ -31,7 +33,27 @@ trait HasFilters
             return;
         }
 
-        unset($this->tableFilters[$field]);
+        $filter = null;
+        foreach ($this->filters() as $f) {
+            if ($f->getKey() === $field) {
+                $filter = $f;
+                break;
+            }
+        }
+
+        $this->tableFilters[$field] = match ($filter?->type()) {
+            'multi_select', 'multi_date' => [],
+            'date_range' => ['from' => '', 'to' => ''],
+            'number_range' => ['min' => '', 'max' => ''],
+            default => '',
+        };
+
+        foreach ($this->filters() as $f) {
+            if ($f instanceof SelectFilter && $f->hasDependency() && $f->getParent() === $field) {
+                $this->tableFilters[$f->getKey()] = '';
+            }
+        }
+
         $this->deselectAll();
         $this->dispatch('remove-filter', field: $field);
         $this->resetPage();
@@ -40,7 +62,16 @@ trait HasFilters
 
     public function clearFilters(): void
     {
-        $this->tableFilters = [];
+        $resetValues = [];
+        foreach ($this->filters() as $filter) {
+            $resetValues[$filter->getKey()] = match ($filter->type()) {
+                'multi_select', 'multi_date' => [],
+                'date_range' => ['from' => '', 'to' => ''],
+                'number_range' => ['min' => '', 'max' => ''],
+                default => '',
+            };
+        }
+        $this->tableFilters = $resetValues;
         $this->deselectAll();
         $this->dispatch('livewire-tables:clear-filters');
         $this->resetPage();
