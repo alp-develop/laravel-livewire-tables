@@ -1,0 +1,34 @@
+# Ignore all dotfiles/dotfolders in root
+/.*
+!/.gitignore
+!/.github/
+
+# Ignore everything in .github/ except CI and PR templates
+/.github/*
+!/.github/workflows/
+!/.github/PULL_REQUEST_TEMPLATE.md
+!/.github/ISSUE_TEMPLATE/
+
+/vendor/
+/node_modules/
+/docker/
+composer.lock
+coverage/
+.phpunit.cache/
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+
+ARCHITECTURE.md
+
+demo/vendor/
+demo/node_modules/
+demo/.env
+demo/composer.lock
+demo/storage/framework/
+demo/storage/logs/
+demo/bootstrap/cache/
+demo/.phpunit.cache/
+demo/public/hot
+demo/public/build/

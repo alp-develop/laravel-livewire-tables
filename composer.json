@@ -1,0 +1,61 @@
+{
+    "name": "alp-develop/laravel-livewire-tables",
+    "description": "Full-featured reactive data tables for Laravel 10-12 and Livewire 3-4. Search, sort, filter, paginate, bulk actions, CSV export, dark mode, Tailwind & Bootstrap themes.",
+    "keywords": ["laravel", "livewire", "tables", "datatable", "datatables", "data-table", "grid", "filter", "sort", "search", "export", "csv", "bulk-actions", "tailwind", "bootstrap", "dark-mode"],
+    "license": "MIT",
+    "homepage": "https://github.com/alp-develop/laravel-livewire-tables",
+    "authors": [
+        {
+            "name": "Livewire Tables Contributors"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/alp-develop/laravel-livewire-tables/issues",
+        "source": "https://github.com/alp-develop/laravel-livewire-tables"
+    },
+    "require": {
+        "php": "^8.1",
+        "illuminate/contracts": "^10.0 || ^11.0 || ^12.0",
+        "illuminate/database": "^10.0 || ^11.0 || ^12.0",
+        "illuminate/support": "^10.0 || ^11.0 || ^12.0",
+        "livewire/livewire": "^3.0 || ^4.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.18",
+        "larastan/larastan": "^3.0",
+        "orchestra/testbench": "^8.0 || ^9.0 || ^10.0",
+        "pestphp/pest": "^3.7",
+        "pestphp/pest-plugin-laravel": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Livewire\\Tables\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Livewire\\Tables\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "analyse": "vendor/bin/phpstan analyse",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Livewire\\Tables\\LivewireTablesServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

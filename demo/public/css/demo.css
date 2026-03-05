@@ -1,0 +1,180 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   Demo Page CSS — Only targets demo-specific elements (NOT the table component)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Base ── */
+[x-cloak] { display: none !important; }
+
+/* ═══════════════ Theme Switcher Bar ═══════════════ */
+.lt-theme-bar { background: #1e293b; padding: .5rem 0 }
+.lt-theme-inner { display: flex; align-items: center; justify-content: center; gap: .375rem }
+.lt-theme-btn {
+    display: inline-block; padding: .3rem .875rem;
+    font-size: .75rem; font-weight: 500; line-height: 1.4;
+    border-radius: .25rem; border: 1px solid rgba(255,255,255,.15);
+    color: rgba(255,255,255,.65); background: transparent;
+    text-decoration: none; cursor: pointer; transition: all .15s;
+}
+.lt-theme-btn:hover { color: #fff; border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.08); text-decoration: none }
+.lt-theme-btn.lt-active { color: #1e293b; background: #fff; border-color: #fff; font-weight: 600 }
+.lt-theme-btn.lt-active:hover { color: #1e293b; background: #f1f5f9 }
+.lt-theme-sep { width: 1px; height: 1rem; background: rgba(255,255,255,.15); margin: 0 .25rem }
+.lt-dark-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.75rem; height: 1.75rem;
+    border-radius: .25rem; border: 1px solid rgba(255,255,255,.15);
+    color: rgba(255,255,255,.65); background: transparent;
+    cursor: pointer; transition: all .15s;
+}
+.lt-dark-toggle:hover { color: #fff; border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.08) }
+.lt-dark-toggle svg { width: 14px; height: 14px }
+
+/* ═══════════════ Section Headers ═══════════════ */
+.lt-section-header { margin-bottom: 1.25rem }
+.lt-section-title {
+    font-size: 1.25rem; font-weight: 700; color: #111827;
+    margin: 0 0 .25rem 0; line-height: 1.3;
+}
+.lt-section-desc {
+    font-size: .875rem; color: #6b7280; margin: 0; line-height: 1.5;
+}
+
+/* ═══════════════ Statistics Cards ═══════════════ */
+.lt-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+@media (max-width: 768px) {
+    .lt-stat-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+    .lt-stat-grid { grid-template-columns: 1fr; }
+}
+.lt-stat-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: .75rem;
+    padding: 1.25rem 1.5rem;
+    text-align: center;
+    transition: box-shadow .15s, border-color .15s;
+}
+.lt-stat-card:hover {
+    border-color: #d1d5db;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+}
+.lt-stat-value {
+    font-size: 1.75rem; font-weight: 700; color: #111827;
+    margin: 0 0 .125rem 0; line-height: 1.2;
+}
+.lt-stat-label {
+    font-size: .8125rem; font-weight: 500; color: #6b7280;
+    margin: 0; text-transform: uppercase; letter-spacing: .025em;
+}
+
+/* ═══════════════ Demo Color Variants (used by demo tables via setHeadClass API) ═══════════════ */
+.lt-thead-indigo { background-color: #eef2ff !important }
+.lt-thead-indigo th { color: #3730a3 !important; background-color: #eef2ff !important }
+.lt-text-indigo { color: #4f46e5 !important }
+.lt-text-indigo-light { color: #818cf8 !important }
+.lt-btn-indigo-subtle { color: #4338ca !important; border-color: #a5b4fc !important; background-color: var(--lt-bg-card) !important }
+.lt-btn-indigo-subtle:hover { background-color: #eef2ff !important }
+.lt-btn-indigo-active { color: #3730a3 !important; border-color: #6366f1 !important; background-color: #e0e7ff !important }
+.lt-thead-sky { background-color: #f0f9ff !important }
+.lt-thead-sky th { color: #075985 !important; background-color: #f0f9ff !important }
+.lt-text-sky { color: #0369a1 !important }
+.lt-text-sky-light { color: #38bdf8 !important }
+.lt-btn-sky-subtle { color: #0369a1 !important; border-color: #7dd3fc !important; background-color: var(--lt-bg-card) !important }
+.lt-btn-sky-subtle:hover { background-color: #f0f9ff !important }
+.lt-btn-sky-active { color: #075985 !important; border-color: #0ea5e9 !important; background-color: #e0f2fe !important }
+.lt-thead-violet { background-color: #f5f3ff !important }
+.lt-thead-violet th { color: #5b21b6 !important; background-color: #f5f3ff !important }
+.lt-text-violet { color: #7c3aed !important }
+.lt-text-violet-light { color: #a78bfa !important }
+.lt-btn-violet-subtle { color: #6d28d9 !important; border-color: #c4b5fd !important; background-color: var(--lt-bg-card) !important }
+.lt-btn-violet-subtle:hover { background-color: #f5f3ff !important }
+.lt-btn-violet-active { color: #5b21b6 !important; border-color: #8b5cf6 !important; background-color: #ede9fe !important }
+
+/* ── Dark-specific thead modifier (deeper tint) ── */
+.lt-thead-dark { opacity: .92 }
+.lt-thead-dark th { font-weight: 600 }
+
+/* ── Tinted thead (Products BS dark) ── */
+.lt-thead-tinted { background-color: var(--lt-bg-subtle, #334155) !important }
+.lt-thead-tinted th { color: var(--lt-text, #f1f5f9) !important; background-color: var(--lt-bg-subtle, #334155) !important }
+
+/* ── Dark button modifier (adds subtle glow/border on dark bg) ── */
+.lt-btn-dark { box-shadow: 0 0 0 1px rgba(255,255,255,.06) }
+
+/* ── Dark row status variants (Bootstrap dark mode) ── */
+.lt-row-danger-dark { background-color: rgba(239,68,68,.12) !important; color: #fca5a5 !important }
+.lt-row-success-dark { background-color: rgba(34,197,94,.1) !important; color: #86efac !important }
+
+/* ═══════════════ Dark Mode Overrides ═══════════════ */
+
+/* ── Demo page elements ── */
+.lt-dark .lt-section-title { color: #f1f5f9 }
+.lt-dark .lt-section-desc { color: #94a3b8 }
+.lt-dark .lt-stat-card {
+    background: #1e293b;
+    border-color: #334155;
+}
+.lt-dark .lt-stat-card:hover {
+    border-color: #475569;
+    box-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+.lt-dark .lt-stat-value { color: #f1f5f9 }
+.lt-dark .lt-stat-label { color: #94a3b8 }
+
+/* ── Thead color variants (all themes) ── */
+.lt-dark .lt-thead-indigo { background-color: rgba(99,102,241,.12) !important }
+.lt-dark .lt-thead-indigo th { color: #a5b4fc !important; background-color: rgba(99,102,241,.12) !important }
+.lt-dark .lt-thead-sky { background-color: rgba(14,165,233,.1) !important }
+.lt-dark .lt-thead-sky th { color: #7dd3fc !important; background-color: rgba(14,165,233,.1) !important }
+.lt-dark .lt-thead-violet { background-color: rgba(139,92,246,.1) !important }
+.lt-dark .lt-thead-violet th { color: #c4b5fd !important; background-color: rgba(139,92,246,.1) !important }
+
+/* ── Text color variants (Bootstrap dark) ── */
+.lt-dark .lt-text-indigo { color: #a5b4fc !important }
+.lt-dark .lt-text-sky { color: #7dd3fc !important }
+.lt-dark .lt-text-violet { color: #c4b5fd !important }
+
+/* ── Button variants — Indigo (Bootstrap dark) ── */
+.lt-dark .lt-btn-indigo-subtle {
+    color: #a5b4fc !important; border-color: #4338ca !important;
+    background-color: var(--lt-bg-card) !important;
+}
+.lt-dark .lt-btn-indigo-subtle:hover { background-color: rgba(99,102,241,.15) !important }
+.lt-dark .lt-btn-indigo-active {
+    color: #c7d2fe !important; border-color: #6366f1 !important;
+    background-color: rgba(99,102,241,.2) !important;
+}
+.lt-dark .lt-btn-indigo-active:hover { background-color: rgba(99,102,241,.28) !important }
+
+/* ── Button variants — Sky (Bootstrap dark) ── */
+.lt-dark .lt-btn-sky-subtle {
+    color: #7dd3fc !important; border-color: #0369a1 !important;
+    background-color: var(--lt-bg-card) !important;
+}
+.lt-dark .lt-btn-sky-subtle:hover { background-color: rgba(14,165,233,.15) !important }
+.lt-dark .lt-btn-sky-active {
+    color: #bae6fd !important; border-color: #0ea5e9 !important;
+    background-color: rgba(14,165,233,.2) !important;
+}
+.lt-dark .lt-btn-sky-active:hover { background-color: rgba(14,165,233,.28) !important }
+
+/* ── Button variants — Violet (Bootstrap dark) ── */
+.lt-dark .lt-btn-violet-subtle {
+    color: #c4b5fd !important; border-color: #6d28d9 !important;
+    background-color: var(--lt-bg-card) !important;
+}
+.lt-dark .lt-btn-violet-subtle:hover { background-color: rgba(139,92,246,.15) !important }
+.lt-dark .lt-btn-violet-active {
+    color: #ddd6fe !important; border-color: #8b5cf6 !important;
+    background-color: rgba(139,92,246,.2) !important;
+}
+.lt-dark .lt-btn-violet-active:hover { background-color: rgba(139,92,246,.28) !important }
+
+/* ── Bootstrap text-primary dark override ── */
+.lt-dark .text-primary { color: #818cf8 !important }

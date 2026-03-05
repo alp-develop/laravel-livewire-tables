@@ -1,0 +1,137 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Laravel 10 — Livewire 3 (pest v2 + pest-laravel v2 for L10 compat)
+          - php: '8.1'
+            laravel: '10.*'
+            livewire: '3.*'
+            testbench: '8.*'
+            pest: '^2.0'
+            pest-laravel: '^2.0'
+
+          - php: '8.2'
+            laravel: '10.*'
+            livewire: '3.*'
+            testbench: '8.*'
+            pest: '^2.0'
+            pest-laravel: '^2.0'
+
+          # Laravel 11 — Livewire 3
+          - php: '8.2'
+            laravel: '11.*'
+            livewire: '3.*'
+            testbench: '9.*'
+            pest: '^3.7'
+            pest-laravel: '^3.1'
+
+          - php: '8.3'
+            laravel: '11.*'
+            livewire: '3.*'
+            testbench: '9.*'
+            pest: '^3.7'
+            pest-laravel: '^3.1'
+
+          # Laravel 11 — Livewire 4
+          - php: '8.2'
+            laravel: '11.*'
+            livewire: '4.*'
+            testbench: '9.*'
+            pest: '^3.7'
+            pest-laravel: '^3.1'
+
+          - php: '8.3'
+            laravel: '11.*'
+            livewire: '4.*'
+            testbench: '9.*'
+            pest: '^3.7'
+            pest-laravel: '^3.1'
+
+          # Laravel 12 — Livewire 4
+          - php: '8.2'
+            laravel: '12.*'
+            livewire: '4.*'
+            testbench: '10.*'
+            pest: '^3.7'
+            pest-laravel: '^3.1'
+
+          - php: '8.3'
+            laravel: '12.*'
+            livewire: '4.*'
+            testbench: '10.*'
+            pest: '^3.7'
+            pest-laravel: '^3.1'
+
+          - php: '8.4'
+            laravel: '12.*'
+            livewire: '4.*'
+            testbench: '10.*'
+            pest: '^3.7'
+            pest-laravel: '^3.1'
+
+    name: PHP ${{ matrix.php }} — Laravel ${{ matrix.laravel }} — Livewire ${{ matrix.livewire }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer remove larastan/larastan --dev --no-interaction --no-update
+          composer require \
+            "illuminate/contracts:${{ matrix.laravel }}" \
+            "illuminate/database:${{ matrix.laravel }}" \
+            "illuminate/support:${{ matrix.laravel }}" \
+            "livewire/livewire:${{ matrix.livewire }}" \
+            "orchestra/testbench:${{ matrix.testbench }}" \
+            --no-interaction --no-update
+          composer require --dev \
+            "pestphp/pest:${{ matrix.pest }}" \
+            "pestphp/pest-plugin-laravel:${{ matrix.pest-laravel }}" \
+            --no-interaction --no-update
+          composer update --prefer-dist --no-interaction --no-progress \
+            --ignore-platform-req=php
+
+      - name: Run tests
+        run: vendor/bin/pest --no-coverage
+
+  code-style:
+    runs-on: ubuntu-latest
+
+    name: Code Style
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: dom, curl, libxml, mbstring, zip
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run code style check
+        run: composer format -- --test
