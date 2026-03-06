@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-03-05
+
+### Fixed
+
+- **Flatpickr calendar stays open**: Flatpickr now closes when clicking outside the filter panel or when opening another dropdown filter.
+- **Flatpickr on mobile**: Date, date range, and multi-date filters now force Flatpickr (`disableMobile: true`) instead of falling back to native date inputs on mobile devices.
+- **Filter select dropdown overflow**: Select dropdowns inside the filter panel no longer clip nested options (removed `overflow-y-auto` from Tailwind filter-dropdown).
+- **DateRange closes filter panel (BS4/BS5)**: Clicking the Flatpickr calendar no longer triggers `@click.outside` and closes the filter panel.
+- **Select/MultiSelect/Boolean dark mode**: Dropdown background, borders, search input, and option hover/active colors now use CSS variables (`--lt-bg-card`, `--lt-border`, `--lt-text`, `--lt-opt-*`) for proper dark mode support across all themes.
+- **Select arrow dark mode**: Native select arrows (`.lt-select`, `.form-select`, `.custom-select`) now use a light SVG fill in dark mode instead of the default dark fill. Fixed `background` shorthand resetting arrow positioning.
+- **Pagination overflow on mobile**: Page numbers are reduced on small screens — only ±2 pages around current, plus first/last page are shown (via `lt-page-hide-mobile` class).
+
+### Changed
+
+- **Mobile responsive toolbar**: Filter, column, and bulk action dropdowns display as full-width overlays on mobile. Per-page, selection bar buttons, and all toolbar items stretch properly. Applied to Tailwind, Bootstrap 5, and Bootstrap 4.
+- **Demo page responsive**: Theme switcher bar wraps, tab badges hidden, stat cards smaller, modal form stacks to single column, reduced padding on mobile.
+
+---
+
 ## [1.0.1] - 2026-03-05
 
 ### Fixed

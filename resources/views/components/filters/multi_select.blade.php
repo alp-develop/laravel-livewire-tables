@@ -59,9 +59,9 @@ $allOptions = collect(
             return opt ? opt.label : value;
         },
         optStyle(value) {
-            let base = 'cursor:pointer;transition:background 0.1s;';
-            if (this.isSelected(value)) return base + 'background:var(--lt-primary-200,#d1d5db);color:var(--lt-primary-700,#374151)';
-            if (this.hovered === value) return base + 'background:var(--lt-primary-50,#f3f4f6)';
+            let base = 'cursor:pointer;transition:background 0.1s;color:var(--lt-text,inherit);';
+            if (this.isSelected(value)) return base + 'background:var(--lt-opt-active);color:var(--lt-opt-active-text)';
+            if (this.hovered === value) return base + 'background:var(--lt-opt-hover)';
             return base;
         }
     }"
@@ -82,7 +82,7 @@ $allOptions = collect(
         </button>
 
         <span
-            style="position:absolute;right:0.5rem;top:50%;transform:translateY(-50%);pointer-events:none;display:flex;align-items:center;color:#9ca3af"
+            style="position:absolute;right:0.5rem;top:50%;transform:translateY(-50%);pointer-events:none;display:flex;align-items:center;color:var(--lt-text-muted,#9ca3af)"
         >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width:16px;height:16px">
                 <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06z" clip-rule="evenodd" />
@@ -108,16 +108,16 @@ $allOptions = collect(
         x-show="open"
         x-cloak
         x-transition
-        style="position:absolute;left:0;right:0;z-index:9999;margin-top:0.25rem;background:white;border:1px solid #e5e7eb;border-radius:0.375rem;box-shadow:0 4px 6px -1px rgba(0,0,0,.1);overflow:hidden"
+        style="position:absolute;left:0;right:0;z-index:9999;margin-top:0.25rem;background:var(--lt-bg-card,#fff);border:1px solid var(--lt-border,#e5e7eb);border-radius:0.375rem;box-shadow:0 4px 6px -1px rgba(0,0,0,.1);overflow:hidden;color:var(--lt-text,inherit)"
         @click.stop
     >
         @if($filter->isSearchable())
-        <div style="padding:0.5rem;border-bottom:1px solid #e5e7eb">
+        <div style="padding:0.5rem;border-bottom:1px solid var(--lt-border,#e5e7eb)">
             <input
                 type="text"
                 x-model="search"
                 placeholder="{{ __('livewire-tables::messages.search') }}"
-                style="width:100%;padding:0.25rem 0.5rem;border:1px solid #e5e7eb;border-radius:0.25rem;font-size:0.875rem;outline:none"
+                style="width:100%;padding:0.25rem 0.5rem;border:1px solid var(--lt-border,#e5e7eb);border-radius:0.25rem;font-size:0.875rem;outline:none;background:var(--lt-bg-card,#fff);color:var(--lt-text,inherit)"
             />
         </div>
         @endif
@@ -146,7 +146,7 @@ $allOptions = collect(
             </template>
         </div>
         <template x-if="selected.length > 0">
-            <div style="padding:0.375rem 0.5rem;border-top:1px solid #e5e7eb;flex-shrink:0">
+            <div style="padding:0.375rem 0.5rem;border-top:1px solid var(--lt-border,#e5e7eb);flex-shrink:0">
                 <button type="button" x-on:click="clear(); $wire.set('tableFilters.{{ $filter->getKey() }}', []); open = false"
                     style="font-size:0.75rem;color:#6b7280;cursor:pointer;background:none;border:none;padding:0"
                 >{{ __('livewire-tables::messages.clear_all') }}</button>

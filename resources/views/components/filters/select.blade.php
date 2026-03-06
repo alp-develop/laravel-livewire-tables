@@ -47,9 +47,9 @@ $wireKey = $filter->hasDependency()
             return opt ? opt.label : '';
         },
         optStyle(value) {
-            let base = 'cursor:default;transition:background 0.1s;';
-            if (this.selected === String(value)) return base + 'background:var(--lt-primary-200,#d1d5db);color:var(--lt-primary-700,#374151);font-weight:600';
-            if (this.hovered === value) return base + 'background:var(--lt-primary-50,#f3f4f6)';
+            let base = 'cursor:default;transition:background 0.1s;color:var(--lt-text,inherit);';
+            if (this.selected === String(value)) return base + 'background:var(--lt-opt-active);color:var(--lt-opt-active-text);font-weight:600';
+            if (this.hovered === value) return base + 'background:var(--lt-opt-hover)';
             return base;
         }
     }"
@@ -75,13 +75,13 @@ $wireKey = $filter->hasDependency()
         </svg>
     </button>
     <div x-show="open" x-cloak x-transition @click.stop
-        style="position:absolute;left:0;right:0;z-index:9999;margin-top:0.25rem;background:white;border:1px solid #e5e7eb;border-radius:0.375rem;box-shadow:0 4px 6px -1px rgba(0,0,0,.1);overflow:hidden"
+        style="position:absolute;left:0;right:0;z-index:9999;margin-top:0.25rem;background:var(--lt-bg-card,#fff);border:1px solid var(--lt-border,#e5e7eb);border-radius:0.375rem;box-shadow:0 4px 6px -1px rgba(0,0,0,.1);overflow:hidden;color:var(--lt-text,inherit)"
     >
         @if($filter->isSearchable())
-        <div style="padding:0.5rem;border-bottom:1px solid #e5e7eb">
+        <div style="padding:0.5rem;border-bottom:1px solid var(--lt-border,#e5e7eb)">
             <input type="text" x-model="search" x-ref="searchInput"
                 placeholder="{{ __('livewire-tables::messages.search') }}"
-                style="width:100%;padding:0.25rem 0.5rem;border:1px solid #e5e7eb;border-radius:0.25rem;font-size:0.875rem;outline:none"
+                style="width:100%;padding:0.25rem 0.5rem;border:1px solid var(--lt-border,#e5e7eb);border-radius:0.25rem;font-size:0.875rem;outline:none;background:var(--lt-bg-card,#fff);color:var(--lt-text,inherit)"
             />
         </div>
         @endif

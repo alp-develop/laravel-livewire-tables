@@ -17,7 +17,8 @@
                         @if ($page == $paginator->currentPage())
                             <li class="page-item active" aria-current="page"><span class="page-link">{{ $page }}</span></li>
                         @else
-                            <li class="page-item"><button wire:click="gotoPage({{ $page }}, '{{ $paginator->getPageName() }}')" class="page-link">{{ $page }}</button></li>
+                            @php $hideMobile = abs($page - $paginator->currentPage()) > 2 && $page !== 1 && $page !== $paginator->lastPage(); @endphp
+                            <li class="page-item{{ $hideMobile ? ' lt-page-hide-mobile' : '' }}"><button wire:click="gotoPage({{ $page }}, '{{ $paginator->getPageName() }}')" class="page-link">{{ $page }}</button></li>
                         @endif
                     @endforeach
                 @endif

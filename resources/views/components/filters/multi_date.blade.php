@@ -34,6 +34,7 @@
                     mode: 'multiple',
                     dateFormat: '{{ $filter->getFormat() }}',
                     allowInput: false,
+                    disableMobile: true,
                     onChange: (dates) => {
                         let fmt = (d) => flatpickr.formatDate(d, '{{ $filter->getFormat() }}');
                         this.selected = dates.map(fmt);

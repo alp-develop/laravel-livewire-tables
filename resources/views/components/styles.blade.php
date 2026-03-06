@@ -15,6 +15,10 @@
         --lt-border-light: #f3f4f6;
         --lt-text: #111827;
         --lt-text-muted: #6b7280;
+        /* Option states (select/boolean dropdowns) */
+        --lt-opt-hover: var(--lt-primary-50);
+        --lt-opt-active: var(--lt-primary-200);
+        --lt-opt-active-text: var(--lt-primary-700);
     }
     /* Background */
     .lt-bg-50{background-color:var(--lt-primary-50)!important}
@@ -93,6 +97,10 @@
     .table.mb-0 td,.table.mb-0 th{padding:.75rem 1rem}
     /* Misc */
     .lt-filter-panel::-webkit-scrollbar{display:none}
+    /* On mobile, filter panel needs overflow visible so select dropdowns can extend beyond */
+    @media (max-width: 639px) {
+        .lt-filter-panel{overflow:visible!important}
+    }
     /* Normalize filter panel sizing — match Tailwind text-sm / text-xs */
     .lt-filter-panel .form-control,.lt-filter-panel .form-select,.lt-filter-panel .custom-select{font-size:.875rem}
     .lt-filter-panel .form-label{font-size:.75rem;letter-spacing:.05em;margin-bottom:.25rem}
@@ -101,8 +109,41 @@
     /* Flex gap polyfill for Bootstrap 4 (which lacks gap-* utilities) */
     .lt-flex-gap-1{gap:.25rem}
     .lt-flex-gap-2{gap:.5rem}
+    /* Per-page button (Bootstrap): inherit dark mode colors */
+    .lt-per-page-btn{background-color:var(--lt-bg-card,#fff)!important;color:var(--lt-text,#212529)!important;border-color:var(--lt-border,#dee2e6)!important}
     /* Soft background utilities (cross-framework) */
     .lt-bg-success-soft{background-color:rgba(40,167,69,.1)!important}
+    /* ═══════════════ MOBILE / RESPONSIVE ═══════════════ */
+    @media (max-width: 639px) {
+        /* All toolbar items stretch full width on mobile */
+        .lt-toolbar-mobile > div,
+        .lt-toolbar-mobile > div > [wire\:key]{width:100%!important}
+        /* Toolbar buttons: force full width including custom-styled ones (only direct toolbar buttons) */
+        .lt-toolbar-mobile > [wire\:key] > button,
+        .lt-toolbar-mobile > div > [wire\:key] > button{width:100%!important;justify-content:center!important}
+        /* Filter panel dropdown: absolute, full-width of parent on mobile */
+        .lt-filter-panel{left:0!important;right:0!important;min-width:0!important;width:100%!important;max-width:100%!important;position:absolute!important;z-index:50!important}
+        /* Column dropdown: full width of parent on mobile */
+        [wire\:key="lt-column-toggle"] > div[x-show]{left:0!important;right:0!important;width:100%!important;position:absolute!important;z-index:50!important}
+        /* Bulk dropdown: full width of parent on mobile */
+        [wire\:key="lt-bulk-toggle"] > div[x-show]{left:0!important;right:0!important;width:100%!important;position:absolute!important;z-index:50!important;min-width:0!important}
+        /* Per-page: button and dropdown full width */
+        .lt-per-page-mobile{width:100%!important}
+        .lt-per-page-mobile > div{width:100%!important}
+        .lt-per-page-mobile button{width:100%!important;min-width:0!important;justify-content:space-between!important}
+        .lt-per-page-mobile div[x-show]{left:0!important;right:0!important;width:100%!important;min-width:0!important}
+        /* Selection bar: stack buttons vertically */
+        .lt-selection-actions-mobile{width:100%!important;flex-direction:column!important}
+        .lt-selection-actions-mobile button,
+        .lt-selection-actions-mobile a{width:100%!important;justify-content:center!important;text-align:center!important}
+        /* Pagination: hide far-away page numbers on mobile */
+        .lt-page-hide-mobile{display:none!important}
+    }
+    @media (min-width: 640px) {
+        .w-sm-auto{width:auto!important}
+        /* Reset per-page to natural size on desktop */
+        .lt-per-page-mobile button{min-width:4.5rem!important}
+    }
 
     @if(config('livewire-tables.dark_mode.enabled', false))
     /* ═══════════════ DARK MODE ═══════════════ */
@@ -126,6 +167,10 @@
         --lt-border-light: {{ $dCard }};
         --lt-text: {{ $dText }};
         --lt-text-muted: {{ $dMuted }};
+        /* Option states — dark mode */
+        --lt-opt-hover: rgba(255,255,255,.06);
+        --lt-opt-active: rgba(255,255,255,.12);
+        --lt-opt-active-text: var(--lt-primary-400);
         /* Bootstrap 5.3 native variable overrides */
         --bs-body-bg: {{ $dBg }};
         --bs-body-color: {{ $dText }};
@@ -164,10 +209,10 @@
 
     {{ $dk }} input,{{ $dk }} select,{{ $dk }} textarea,
     {{ $dk }} .form-control,{{ $dk }} .form-select,{{ $dk }} .custom-select{
-        background:var(--lt-bg-card)!important;color:var(--lt-text)!important;border-color:var(--lt-border)!important
+        background-color:var(--lt-bg-card)!important;color:var(--lt-text)!important;border-color:var(--lt-border)!important
     }
     {{ $dk }} .form-control:focus,{{ $dk }} .form-select:focus,{{ $dk }} .custom-select:focus{
-        background:var(--lt-bg-card)!important;border-color:var(--lt-primary-500)!important;box-shadow:0 0 0 .2rem rgba(99,102,241,.25)!important
+        background-color:var(--lt-bg-card)!important;border-color:var(--lt-primary-500)!important;box-shadow:0 0 0 .2rem rgba(99,102,241,.25)!important
     }
     {{ $dk }} .form-check-input{background-color:var(--lt-bg-card)!important;border-color:var(--lt-border)!important}
     {{ $dk }} .form-check-input:checked{background-color:var(--lt-primary-600)!important;border-color:var(--lt-primary-600)!important}
@@ -203,7 +248,7 @@
     {{ $dk }} .rounded,{{ $dk }} .rounded-lg,{{ $dk }} .rounded-xl{border-color:var(--lt-border)}
 
     /* ── Tailwind utility class overrides ── */
-    {{ $dk }} .bg-gray-50,{{ $dk }} .bg-gray-100{background:var(--lt-bg-subtle)!important}
+    {{ $dk }} .bg-gray-50,{{ $dk }} .bg-gray-100{background-color:var(--lt-bg-subtle)!important}
     {{ $dk }} .border-gray-200,{{ $dk }} .border-gray-100,{{ $dk }} .border-gray-300{border-color:var(--lt-border)!important}
     {{ $dk }} .divide-gray-200>:not([hidden])~:not([hidden]),{{ $dk }} .divide-gray-100>:not([hidden])~:not([hidden]){border-color:var(--lt-border)!important}
     {{ $dk }} .text-gray-700{color:#e2e8f0!important}
@@ -216,6 +261,10 @@
     {{ $dk }} .hover\:bg-gray-50:hover{background:rgba(255,255,255,.05)!important}
     {{ $dk }} .hover\:text-gray-900:hover,{{ $dk }} .hover\:text-gray-700:hover{color:var(--lt-text)!important}
     {{ $dk }} .placeholder-gray-400::placeholder{color:#64748b!important}
+    {{ $dk }} .lt-select,{{ $dk }} .lt-input{background-color:var(--lt-bg-card)!important;color:var(--lt-text)!important;border-color:var(--lt-border)!important}
+    {{ $dk }} .lt-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2394a3b8'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3E%3C/svg%3E")!important}
+    {{ $dk }} .form-select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e")!important}
+    {{ $dk }} .custom-select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='%2394a3b8' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e")!important}
     {{ $dk }} .bg-red-50{background:rgba(239,68,68,.12)!important}
     {{ $dk }} .text-red-900{color:#fca5a5!important}
     {{ $dk }} .bg-green-50{background:rgba(16,185,129,.1)!important}

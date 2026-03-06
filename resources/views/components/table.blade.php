@@ -34,7 +34,7 @@
 
     <div class="{{ $classes['toolbar'] }}">
         <div class="{{ $classes['toolbar-row'] }}">
-            <div class="{{ $classes['toolbar-left'] }}">
+            <div class="{{ $classes['toolbar-left'] }} lt-toolbar-mobile">
                 {!! $this->resolveSlot($this->toolbarLeftPrepend()) !!}
                 <div class="{{ $classes['toolbar-search'] }}">
                     @include('livewire-tables::components.search')
@@ -57,7 +57,7 @@
                                 });
                             }
                          }"
-                         @click.outside="open = false">
+                         @click.outside="if ($event.target.closest('.flatpickr-calendar') || document.querySelector('.flatpickr-calendar.open')) return; open = false">
                         <button
                             @click="open = !open"
                             type="button"
@@ -86,7 +86,7 @@
                 {!! $this->resolveSlot($this->toolbarLeftAppend()) !!}
             </div>
 
-            <div class="{{ $classes['toolbar-right'] }}">
+            <div class="{{ $classes['toolbar-right'] }} lt-toolbar-mobile">
                 {!! $this->resolveSlot($this->toolbarRightPrepend()) !!}
                 @if($this->hasBulkActions())
                 <div wire:key="lt-bulk-toggle" class="{{ $classes['toolbar-item'] }}" x-data="{ open: false }" @click.outside="open = false">
@@ -153,7 +153,7 @@
                     </div>
                 </div>
 
-                <div class="{{ $classes['toolbar-item'] }}">
+                <div class="{{ $classes['toolbar-item'] }} lt-per-page-mobile">
                     @include('livewire-tables::components.per-page')
                 </div>
                 {!! $this->resolveSlot($this->toolbarRightAppend()) !!}
@@ -170,7 +170,7 @@
         <span class="{{ $classes['selection-count'] }}"
             x-text="($wire.selectAllPages ? Math.max(0, {{ $totalRows }} - $wire.excludedIds.length) : $wire.selectedIds.length) + ' {{ __('livewire-tables::messages.selected') }}'"
         ></span>
-        <div class="{{ $classes['selection-actions'] }}">
+        <div class="{{ $classes['selection-actions'] }} lt-selection-actions-mobile">
             <button type="button" class="{{ $classes['selection-select-page-btn'] }}"
                 x-show="$wire.selectAllPages ? $wire.pageIds.some(id => $wire.excludedIds.includes(id)) : !$wire.pageIds.every(id => $wire.selectedIds.includes(id))"
                 x-on:click="$wire.setPageSelection($wire.pageIds, true)">

@@ -20,6 +20,7 @@
                     dateFormat: 'Y-m-d',
                     allowInput: false,
                     clickOpens: true,
+                    disableMobile: true,
                     onChange: (dates) => {
                         if (dates.length === 1) {
                             this.hasValue = true;

@@ -19,7 +19,8 @@
                                 <span class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-white lt-bg-600 border lt-border-600 cursor-default">{{ $page }}</span>
                             </span>
                         @else
-                            <button wire:click="gotoPage({{ $page }}, '{{ $paginator->getPageName() }}')" class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:z-10 focus:outline-none lt-focus-ring-500">{{ $page }}</button>
+                            @php $hideMobile = abs($page - $paginator->currentPage()) > 2 && $page !== 1 && $page !== $paginator->lastPage(); @endphp
+                            <button wire:click="gotoPage({{ $page }}, '{{ $paginator->getPageName() }}')" class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:z-10 focus:outline-none lt-focus-ring-500{{ $hideMobile ? ' lt-page-hide-mobile' : '' }}">{{ $page }}</button>
                         @endif
                     @endforeach
                 @endif

@@ -178,3 +178,24 @@
 
 /* ── Bootstrap text-primary dark override ── */
 .lt-dark .text-primary { color: #818cf8 !important }
+
+/* ═══════════════ Mobile / Responsive (Demo Page) ═══════════════ */
+@media (max-width: 639px) {
+    /* Theme bar: wrap buttons */
+    .lt-theme-inner { flex-wrap: wrap; gap: .25rem .375rem }
+    /* Main content: reduce padding */
+    main { padding: 1rem .75rem !important }
+    /* Section header: stack title + button */
+    .lt-section-header { flex-direction: column !important; align-items: stretch !important }
+    /* Stat values smaller on mobile */
+    .lt-stat-value { font-size: 1.375rem }
+    .lt-stat-card { padding: .875rem 1rem }
+    /* Tab badges hidden on mobile */
+    .nav-tabs .badge, nav.-mb-px span { display: none !important }
+    /* Bootstrap tabs: horizontal scroll */
+    .nav-tabs { flex-wrap: nowrap !important; overflow-x: auto; -webkit-overflow-scrolling: touch }
+    .nav-tabs .nav-link { white-space: nowrap; font-size: .8125rem; padding: .5rem .625rem }
+    /* Modal form: single column */
+    .lt-modal-grid { grid-template-columns: 1fr !important }
+    .lt-modal-grid > [style*="grid-column:span 2"] { grid-column: span 1 !important }
+}

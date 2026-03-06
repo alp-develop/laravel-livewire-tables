@@ -22,6 +22,7 @@
                     dateFormat: '{{ $filter->getFormat() }}',
                     allowInput: true,
                     clickOpens: true,
+                    disableMobile: true,
                     onChange: (dates) => {
                         let fmt = (d) => flatpickr.formatDate(d, '{{ $filter->getFormat() }}');
                         if (dates.length === 2) {
