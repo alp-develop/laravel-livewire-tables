@@ -176,6 +176,23 @@ abstract class Column implements ColumnContract, SearchableContract
         return $this->fieldName;
     }
 
+    protected function resolveKeyForRow(Model $row): string
+    {
+        $key = $this->resolutionKey();
+
+        if ($this->selectAlias === null && str_contains($this->fieldName, '.')) {
+            $attributes = $row->getAttributes();
+            if (! array_key_exists($key, $attributes)) {
+                $bare = substr($this->fieldName, strrpos($this->fieldName, '.') + 1);
+                if (array_key_exists($bare, $attributes)) {
+                    return $bare;
+                }
+            }
+        }
+
+        return $key;
+    }
+
     public function headerClass(string $class): static
     {
         $this->headerClassValue = $class;
@@ -305,7 +322,7 @@ abstract class Column implements ColumnContract, SearchableContract
             return ($this->renderCallback)($row);
         }
 
-        $value = data_get($row, $this->resolutionKey());
+        $value = data_get($row, $this->resolveKeyForRow($row));
 
         if ($this->formatCallback !== null) {
             return ($this->formatCallback)($value, $row);

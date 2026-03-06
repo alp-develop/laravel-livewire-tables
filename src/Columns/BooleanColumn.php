@@ -36,7 +36,7 @@ final class BooleanColumn extends Column
             return ($this->renderCallback)($row);
         }
 
-        $value = data_get($row, $this->resolutionKey());
+        $value = data_get($row, $this->resolveKeyForRow($row));
 
         if ($this->formatCallback !== null) {
             return ($this->formatCallback)($value, $row);

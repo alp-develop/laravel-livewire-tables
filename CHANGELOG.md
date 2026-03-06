@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2026-03-05
+
+### Fixed
+
+- **Join column display with custom SELECT alias**: Columns defined with dot notation (e.g. `TextColumn::make('users.email')`) now correctly display values when the SELECT query uses a custom alias (e.g. `users.email as user_email`). Previously, display resolution only worked when the alias matched the auto-derived `table_column` pattern. The engine now falls back to the bare column name when the derived alias key is absent from the result row.
+
+---
+
 ## [1.0.2] - 2026-03-05
 
 ### Fixed

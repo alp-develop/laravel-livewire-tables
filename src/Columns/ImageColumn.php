@@ -56,7 +56,7 @@ final class ImageColumn extends Column
 
     public function resolveValue(Model $row): mixed
     {
-        $value = data_get($row, $this->resolutionKey());
+        $value = data_get($row, $this->resolveKeyForRow($row));
 
         if ($this->formatCallback !== null) {
             return ($this->formatCallback)($value, $row);
