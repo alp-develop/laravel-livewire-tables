@@ -29,6 +29,24 @@
 .lt-dark-toggle:hover { color: #fff; border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.08) }
 .lt-dark-toggle svg { width: 14px; height: 14px }
 
+/* ═══════════════ Language Selector ═══════════════ */
+.lt-lang-wrap { position: relative }
+.lt-lang-dropdown {
+    display: none; position: absolute; top: calc(100% + .4rem); left: 50%; transform: translateX(-50%);
+    background: #1e293b; border: 1px solid rgba(255,255,255,.15); border-radius: .375rem;
+    min-width: 9rem; padding: .25rem 0; z-index: 9999;
+    box-shadow: 0 4px 16px rgba(0,0,0,.4);
+}
+.lt-lang-dropdown.lt-lang-open { display: block }
+.lt-lang-item {
+    display: block; width: 100%; padding: .35rem .875rem;
+    font-size: .75rem; font-weight: 500; color: rgba(255,255,255,.65);
+    text-decoration: none; white-space: nowrap; transition: all .12s;
+    background: transparent; border: none; text-align: left; cursor: pointer;
+}
+.lt-lang-item:hover { color: #fff; background: rgba(255,255,255,.08); text-decoration: none }
+.lt-lang-item.lt-lang-active { color: #fff; font-weight: 700 }
+
 /* ═══════════════ Section Headers ═══════════════ */
 .lt-section-header { margin-bottom: 1.25rem }
 .lt-section-title {

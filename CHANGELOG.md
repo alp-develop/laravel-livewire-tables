@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-03-06
+
+### Fixed
+
+- **Column toggle dropdown behind BladeColumn cells**: The column visibility dropdown now renders above `BladeColumn` cells that use `position-relative` internally (e.g. action buttons, toggles). Fixed by ensuring the dropdown has an explicit `z-index` that takes precedence over positioned cell content.
+- **TypeError on `$darkMode` during Livewire update**: Changed `$darkMode` property type from `bool` to `?bool` so Livewire can safely hydrate `null` (e.g. when a row is deleted and the component re-syncs state through middleware), preventing a fatal `TypeError: Cannot assign null to property of type bool`.
+
+### Added
+
+- **11 new bundled languages**: Added translations for French (`fr`), German (`de`), Italian (`it`), Dutch (`nl`), Polish (`pl`), Russian (`ru`), Chinese Simplified (`zh`), Japanese (`ja`), Korean (`ko`), Turkish (`tr`), and Indonesian (`id`). Total bundled locales: 14. Publishable via `php artisan vendor:publish --tag=livewire-tables-lang`.
+- **Demo language selector**: The demo header now includes a language switcher showing all 14 supported locales. Selection is stored in session and applies on next render via Livewire. The selector button label and dropdown item names are fully translated via `languages.php` per locale.
+- **Demo full i18n**: All demo UI text — tab names, section titles, descriptions, stat card labels, modal fields, buttons, and placeholders — is now driven by `__('demo.key')` translations for all 14 locales.
+- **Demo country selector**: The "Add Catalog Item" modal country field is now a `<select>` dropdown with 35 countries, replacing the free-text input.
+
+---
+
 ## [1.0.3] - 2026-03-05
 
 ### Fixed

@@ -135,7 +135,7 @@
                         x-cloak
                         x-transition
                         class="{{ $classes['column-dropdown'] }}"
-                        style="width:min(14rem, calc(100vw - 2rem));max-height:70vh;padding:0.75rem;border:1px solid #e5e7eb"
+                        style="width:min(14rem, calc(100vw - 2rem));max-height:70vh;padding:0.75rem;border:1px solid #e5e7eb;z-index:1"
                         @click.stop
                     >
                         @foreach($allColumns as $col)

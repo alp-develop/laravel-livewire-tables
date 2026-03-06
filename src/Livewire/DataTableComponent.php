@@ -51,7 +51,7 @@ abstract class DataTableComponent extends Component
     public string $tableTheme = '';
 
     #[Reactive]
-    public bool $darkMode = false;
+    public ?bool $darkMode = false;
 
     abstract public function query(): Builder;
 

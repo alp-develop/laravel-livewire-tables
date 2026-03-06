@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\App;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\Tables\Themes\ThemeManager;
@@ -18,6 +19,8 @@ class DemoPage extends Component
     public string $theme = 'tailwind';
 
     public bool $darkMode = false;
+
+    public string $language = 'en';
 
     public array $activeFilters = [];
 
@@ -47,6 +50,20 @@ class DemoPage extends Component
     {
         $this->theme = in_array($theme, ['tailwind', 'bootstrap5', 'bootstrap4', 'bootstrap'], true) ? $theme : 'tailwind';
         app(ThemeManager::class)->use($this->theme);
+        $this->language = session('locale', config('app.locale', 'en'));
+        App::setLocale($this->language);
+    }
+
+    #[On('set-language')]
+    public function setLanguage(string $value): void
+    {
+        $allowed = ['en', 'es', 'pt', 'fr', 'de', 'it', 'nl', 'pl', 'ru', 'zh', 'ja', 'ko', 'tr', 'id'];
+        if (in_array($value, $allowed, true)) {
+            session(['locale' => $value]);
+            App::setLocale($value);
+            $this->language = $value;
+            $this->dispatch('language-changed');
+        }
     }
 
     public function render(): View
@@ -74,7 +91,7 @@ class DemoPage extends Component
             'activeCatalog' => (clone $catalogQuery)->where('active', true)->count(),
             'catalogCategories' => (clone $catalogQuery)->distinct('category')->count('category'),
             'avgCatalogPrice' => $catalogQuery->avg('price') ?? 0,
-        ])->extends('layouts.demo', ['theme' => $this->theme])->section('content');
+        ])->extends('layouts.demo', ['theme' => $this->theme, 'language' => $this->language])->section('content');
     }
 
     protected function buildProductsQuery(): Builder

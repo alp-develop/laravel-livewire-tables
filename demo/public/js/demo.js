@@ -50,4 +50,18 @@
             Livewire.dispatch('dark-mode-changed', { active: true });
         }
     });
+
+    // Close language dropdown when clicking outside
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.lt-lang-wrap')) {
+            document.querySelectorAll('.lt-lang-dropdown.lt-lang-open').forEach(function (el) {
+                el.classList.remove('lt-lang-open');
+            });
+        }
+    });
+
+    // Reload page when Livewire fires language-changed so layout re-renders with new locale
+    document.addEventListener('language-changed', function () {
+        window.location.reload();
+    });
 })();

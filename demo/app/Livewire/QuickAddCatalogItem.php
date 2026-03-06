@@ -50,6 +50,47 @@ class QuickAddCatalogItem extends Component
         ];
     }
 
+    public function countries(): array
+    {
+        return [
+            'Argentina',
+            'Australia',
+            'Brazil',
+            'Canada',
+            'Chile',
+            'China',
+            'Colombia',
+            'Denmark',
+            'Egypt',
+            'Finland',
+            'France',
+            'Germany',
+            'India',
+            'Indonesia',
+            'Italy',
+            'Japan',
+            'Malaysia',
+            'Mexico',
+            'Netherlands',
+            'New Zealand',
+            'Nigeria',
+            'Norway',
+            'Poland',
+            'Portugal',
+            'Russia',
+            'Saudi Arabia',
+            'South Africa',
+            'South Korea',
+            'Spain',
+            'Sweden',
+            'Switzerland',
+            'Turkey',
+            'United Kingdom',
+            'USA',
+            'Vietnam',
+        ];
+    }
+
     public function save(): void
     {
         $this->validate();
