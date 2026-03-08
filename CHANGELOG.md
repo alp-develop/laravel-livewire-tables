@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-03-08
+
+### Fixed
+
+- **`QueryException` when sorting with `BladeColumn` auto-generated field**: `BladeColumn::sortable()` is now a no-op — marking a `BladeColumn` as sortable is silently ignored since it has no real DB column. Additionally, `resolveColumns()` now resets `BladeColumn::$bladeCounter` before each cache build, ensuring consistent `_blade_N` field IDs across multiple component instances and Octane environments where the static counter could accumulate between requests.
+- **TypeError in `Filter::applyFilter()` when closure returns null**: The `applyFilter()` method now guards against user-defined filter closures that omit an explicit `return` statement. If the callback returns a non-`Builder` value (including `null`), the original `$query` is returned instead, preventing a fatal `TypeError: Return value must be of type Builder, null returned`.
+- **Bulk action checkboxes styling conflicts with third-party CSS frameworks**: Changed bulk checkbox class from `form-check-input` (Bootstrap-specific) to `lt-bulk-checkbox` (livewire-tables-specific). This prevents style collisions with frameworks like AdminLTE, Argon, or any other theme that defines `.form-check-input` with conflicting styles. All themes (Tailwind, Bootstrap 5, Bootstrap 4) now use the dedicated `lt-bulk-checkbox` class with theme colors (primary color when checked) via CSS variables for consistent dark mode support.
+
+---
+
 ## [1.1.0] - 2026-03-06
 
 ### Fixed

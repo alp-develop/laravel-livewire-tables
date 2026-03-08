@@ -88,7 +88,7 @@ final class Bootstrap4Theme implements ThemeContract
             'bulk-dropdown-item' => 'd-flex w-100 align-items-center px-3 py-2 small text-dark text-decoration-none bg-transparent border-0 text-left',
             'bulk-checkbox-th' => 'text-uppercase text-secondary font-weight-bold small',
             'bulk-checkbox-td' => '',
-            'bulk-checkbox' => 'lt-checkbox cursor-pointer',
+            'bulk-checkbox' => 'lt-bulk-checkbox cursor-pointer',
             'selection-bar' => 'd-flex flex-column flex-sm-row align-items-stretch align-items-sm-center justify-content-between lt-flex-gap-2 px-3 py-2 border-bottom lt-bg-50-muted',
             'selection-count' => 'small font-weight-bold lt-text-700',
             'selection-actions' => 'd-flex flex-column flex-sm-row flex-wrap align-items-stretch align-items-sm-center lt-flex-gap-2',

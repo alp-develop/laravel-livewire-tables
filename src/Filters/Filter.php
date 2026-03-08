@@ -181,7 +181,9 @@ abstract class Filter implements FilterContract
             return $query;
         }
 
-        return ($this->queryCallback)($query, $value);
+        $result = ($this->queryCallback)($query, $value);
+
+        return $result instanceof Builder ? $result : $query;
     }
 
     /** @return array<string, string> */
