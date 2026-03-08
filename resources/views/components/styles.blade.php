@@ -49,6 +49,10 @@
     label:has(.lt-checkbox):hover{background-color:var(--lt-primary-50)!important;cursor:pointer}
     label:has(.lt-checkbox):hover .lt-checkbox{border-color:var(--lt-primary-400)!important}
     label:has(.lt-checkbox):hover .lt-checkbox:checked{border-color:var(--lt-primary-600)!important}
+    /* Bulk action checkboxes */
+    .lt-bulk-checkbox{accent-color:var(--lt-primary-600);color:var(--lt-primary-600)}
+    .lt-bulk-checkbox:checked{background-color:var(--lt-primary-600)!important;border-color:var(--lt-primary-600)!important}
+    .lt-bulk-checkbox:focus{outline:2px solid var(--lt-primary-500);outline-offset:2px;box-shadow:0 0 0 3px var(--lt-primary-100)!important}
     .lt-focus-ring-500:focus{box-shadow:0 0 0 2px var(--lt-primary-500)}
     /* Buttons */
     .lt-btn-primary{background-color:var(--lt-primary-600)!important;border-color:var(--lt-primary-600)!important;color:#fff!important}

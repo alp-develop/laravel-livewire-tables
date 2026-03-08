@@ -88,7 +88,7 @@ final class TailwindTheme implements ThemeContract
             'bulk-dropdown-item' => 'flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors bg-transparent border-none text-left cursor-pointer',
             'bulk-checkbox-th' => 'px-4 py-3 w-10',
             'bulk-checkbox-td' => 'px-4 py-3 w-10',
-            'bulk-checkbox' => 'lt-checkbox rounded border-gray-300 h-4 w-4 cursor-pointer',
+            'bulk-checkbox' => 'lt-bulk-checkbox rounded border-gray-300 h-4 w-4 cursor-pointer',
             'selection-bar' => 'flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-4 py-2 border-b lt-border-100 lt-bg-50-muted',
             'selection-count' => 'text-sm font-semibold lt-text-700',
             'selection-actions' => 'flex flex-col gap-2 w-full sm:flex-row sm:flex-wrap sm:items-center sm:w-auto',
