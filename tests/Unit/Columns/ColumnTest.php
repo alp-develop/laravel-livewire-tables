@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\Tables\Columns\BladeColumn;
 use Livewire\Tables\Columns\BooleanColumn;
 use Livewire\Tables\Columns\Column;
@@ -188,14 +190,14 @@ test('Column::blade factory creates BladeColumn', function (): void {
 });
 
 test('BladeColumn renderCell returns empty string when no render callback set', function (): void {
-    $model = new class extends \Illuminate\Database\Eloquent\Model {};
+    $model = new class extends Model {};
     $column = BladeColumn::make();
 
     expect($column->renderCell($model))->toBe('');
 });
 
 test('BladeColumn renderCell calls render callback with row and table', function (): void {
-    $model = new class extends \Illuminate\Database\Eloquent\Model {};
+    $model = new class extends Model {};
     $called = [];
 
     $column = BladeColumn::make()->render(function ($row, $table) use (&$called): string {
@@ -213,9 +215,9 @@ test('BladeColumn renderCell calls render callback with row and table', function
 });
 
 test('BladeColumn renderCell renders Illuminate View instance', function (): void {
-    $model = new class extends \Illuminate\Database\Eloquent\Model {};
+    $model = new class extends Model {};
 
-    $view = \Mockery::mock(\Illuminate\Contracts\View\View::class);
+    $view = Mockery::mock(View::class);
     $view->shouldReceive('render')->once()->andReturn('<div>from view</div>');
 
     $column = BladeColumn::make()->render(fn ($row, $table) => $view);
@@ -223,11 +225,11 @@ test('BladeColumn renderCell renders Illuminate View instance', function (): voi
 
     expect($result)->toBe('<div>from view</div>');
 
-    \Mockery::close();
+    Mockery::close();
 });
 
 test('BladeColumn resolveValue returns null', function (): void {
-    $model = new class extends \Illuminate\Database\Eloquent\Model {};
+    $model = new class extends Model {};
     $column = BladeColumn::make();
 
     expect($column->resolveValue($model))->toBeNull();
@@ -299,7 +301,7 @@ test('TextColumn::make without arguments generates unique field', function (): v
 });
 
 test('render closure provides computed cell content', function (): void {
-    $model = new class extends \Illuminate\Database\Eloquent\Model
+    $model = new class extends Model
     {
         protected $guarded = [];
     };
@@ -314,7 +316,7 @@ test('render closure provides computed cell content', function (): void {
 });
 
 test('label and render work independently', function (): void {
-    $model = new class extends \Illuminate\Database\Eloquent\Model
+    $model = new class extends Model
     {
         protected $guarded = [];
     };
@@ -329,7 +331,7 @@ test('label and render work independently', function (): void {
 });
 
 test('render closure takes priority over format callback', function (): void {
-    $model = new class extends \Illuminate\Database\Eloquent\Model
+    $model = new class extends Model
     {
         protected $guarded = [];
     };

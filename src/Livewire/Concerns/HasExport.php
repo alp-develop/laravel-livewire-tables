@@ -58,7 +58,7 @@ trait HasExport
                         $value = $col->resolveValue($row);
                         $values[] = is_bool($value)
                             ? ($value ? 'Yes' : 'No')
-                            : (string) ($value ?? '');
+                            : $this->escapeCsvValue((string) ($value ?? ''));
                     }
                     fputcsv($out, $values);
                 }
@@ -90,5 +90,14 @@ trait HasExport
         }
 
         return $query;
+    }
+
+    private function escapeCsvValue(string $value): string
+    {
+        if ($value !== '' && str_contains("=+-@\t\r", $value[0])) {
+            return "'".$value;
+        }
+
+        return $value;
     }
 }

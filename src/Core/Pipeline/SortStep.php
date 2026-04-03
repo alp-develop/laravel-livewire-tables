@@ -33,8 +33,15 @@ final class SortStep implements StepContract
             if (! isset($columnMap[$field])) {
                 continue;
             }
+
+            $safeField = preg_replace('/[^a-zA-Z0-9_.]/', '', $field);
+
+            if ($safeField === null || $safeField === '') {
+                continue;
+            }
+
             $dir = strtolower($direction) === 'desc' ? 'desc' : 'asc';
-            $query->orderBy($field, $dir);
+            $query->orderBy($safeField, $dir);
         }
 
         return $query;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Livewire\Tables\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -111,7 +112,7 @@ final class MakeTableCommand extends Command
     /** @return array<int, array{name: string, type: string}> */
     private function introspectColumns(string $modelClass): array
     {
-        /** @var \Illuminate\Database\Eloquent\Model $model */
+        /** @var Model $model */
         $model = new $modelClass;
         $table = $model->getTable();
 

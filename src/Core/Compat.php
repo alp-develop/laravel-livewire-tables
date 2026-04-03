@@ -63,7 +63,12 @@ final class Compat
 
     public static function isLaravel12(): bool
     {
-        return self::laravelVersion() >= 12;
+        return self::laravelVersion() === 12;
+    }
+
+    public static function isLaravel13(): bool
+    {
+        return self::laravelVersion() >= 13;
     }
 
     public static function supports(string ...$features): bool

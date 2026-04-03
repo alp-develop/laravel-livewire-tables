@@ -1,6 +1,6 @@
 {
     "name": "alp-develop/laravel-livewire-tables",
-    "description": "Full-featured reactive data tables for Laravel 10-12 and Livewire 3-4. Search, sort, filter, paginate, bulk actions, CSV export, dark mode, Tailwind & Bootstrap themes.",
+    "description": "Full-featured reactive data tables for Laravel 10-13 and Livewire 3-4. Search, sort, filter, paginate, bulk actions, CSV export, dark mode, Tailwind & Bootstrap themes.",
     "keywords": ["laravel", "livewire", "tables", "datatable", "datatables", "data-table", "grid", "filter", "sort", "search", "export", "csv", "bulk-actions", "tailwind", "bootstrap", "dark-mode"],
     "license": "MIT",
     "homepage": "https://github.com/alp-develop/laravel-livewire-tables",
@@ -15,17 +15,17 @@
     },
     "require": {
         "php": "^8.1",
-        "illuminate/contracts": "^10.0 || ^11.0 || ^12.0",
-        "illuminate/database": "^10.0 || ^11.0 || ^12.0",
-        "illuminate/support": "^10.0 || ^11.0 || ^12.0",
+        "illuminate/contracts": "^10.0 || ^11.0 || ^12.0 || ^13.0",
+        "illuminate/database": "^10.0 || ^11.0 || ^12.0 || ^13.0",
+        "illuminate/support": "^10.0 || ^11.0 || ^12.0 || ^13.0",
         "livewire/livewire": "^3.0 || ^4.0"
     },
     "require-dev": {
         "laravel/pint": "^1.18",
         "larastan/larastan": "^3.0",
-        "orchestra/testbench": "^8.0 || ^9.0 || ^10.0",
-        "pestphp/pest": "^3.7",
-        "pestphp/pest-plugin-laravel": "^3.1"
+        "orchestra/testbench": "^8.0 || ^9.0 || ^10.0 || ^11.0",
+        "pestphp/pest": "^2.0 || ^3.7 || ^4.4",
+        "pestphp/pest-plugin-laravel": "^2.0 || ^3.1 || ^4.1"
     },
     "autoload": {
         "psr-4": {

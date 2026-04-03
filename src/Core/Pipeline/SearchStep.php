@@ -81,7 +81,11 @@ final class SearchStep implements StepContract
 
     private function applyFieldSearch(Builder $query, string $field, string $search): void
     {
-        $safeField = preg_replace('/[^a-zA-Z0-9_.]/', '', $field) ?? $field;
+        $safeField = preg_replace('/[^a-zA-Z0-9_.]/', '', $field);
+
+        if ($safeField === null || $safeField === '') {
+            return;
+        }
 
         $query->orWhere($safeField, 'LIKE', "%{$search}%");
     }

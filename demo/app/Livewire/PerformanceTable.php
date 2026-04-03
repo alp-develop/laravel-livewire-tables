@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Employee;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Tables\Columns\TextColumn;
 use Livewire\Tables\Core\Contracts\ColumnContract;
@@ -137,7 +138,7 @@ class PerformanceTable extends DataTableComponent
             TextColumn::make('hire_date')
                 ->label('Hired')
                 ->sortable()
-                ->format(fn (mixed $value) => $value ? \Carbon\Carbon::parse($value)->format('M Y') : '-'),
+                ->format(fn (mixed $value) => $value ? Carbon::parse($value)->format('M Y') : '-'),
         ];
     }
 

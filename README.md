@@ -1,91 +1,36 @@
 # Laravel Livewire Tables
 
-> **The easiest way to build full-featured, reactive data tables in Laravel.**  
-> Search, sort, filter, paginate, export to CSV, bulk actions — zero custom JavaScript required.
+<p align="center">
+    <picture>
+        <img src="art/banner.png" width="100%" alt="Laravel Livewire Tables">
+    </picture>
+</p>
 
-[![Tests](https://github.com/alp-develop/laravel-livewire-tables/actions/workflows/tests.yml/badge.svg)](https://github.com/alp-develop/laravel-livewire-tables/actions/workflows/tests.yml)
-[![Latest Stable Version](https://poser.pugx.org/alp-develop/laravel-livewire-tables/v/stable)](https://packagist.org/packages/alp-develop/laravel-livewire-tables)
-[![License](https://poser.pugx.org/alp-develop/laravel-livewire-tables/license)](https://packagist.org/packages/alp-develop/laravel-livewire-tables)
+<p align="center">
+    <a href="https://github.com/alp-develop/laravel-livewire-tables/actions/workflows/tests.yml"><img src="https://github.com/alp-develop/laravel-livewire-tables/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
+    <a href="https://packagist.org/packages/alp-develop/laravel-livewire-tables"><img src="https://poser.pugx.org/alp-develop/laravel-livewire-tables/v/stable" alt="Latest Stable Version"></a>
+    <a href="https://packagist.org/packages/alp-develop/laravel-livewire-tables"><img src="https://poser.pugx.org/alp-develop/laravel-livewire-tables/license" alt="License"></a>
+</p>
 
-A powerful, server-side data table component for **Laravel 10, 11, 12** and **Livewire 3, 4**. Designed for real-world applications that need sorting, searching, filtering, bulk actions, CSV export, dark mode, and multiple theme support — all in a single, easy-to-use package. Works with **PHP 8.1 through 8.4**, **Tailwind CSS**, **Bootstrap 5**, and **Bootstrap 4**.
+> Full-featured, reactive data tables for Laravel. Search, sort, filter, paginate, export, bulk actions — zero JavaScript.
+
+**Laravel** 10–13 | **Livewire** 3–4 | **PHP** 8.1–8.5 | **Tailwind** / **Bootstrap 5** / **Bootstrap 4** | Dark mode
 
 ---
 
-## Why This Package?
-
-| | |
-|---|---|
-| **Zero custom JS** | 100% server-side. Powered by Livewire + [Alpine.js](https://alpinejs.dev/) for reactive UI interactions. |
-| **Multi-version** | Laravel 10 / 11 / 12, Livewire 3 / 4, PHP 8.1–8.4 — fully tested. |
-| **3 themes** | Tailwind CSS, Bootstrap 5, Bootstrap 4 — all with dark mode. |
-| **Production-ready** | 184 tests, 479 assertions across 9 PHP/Laravel/Livewire matrix combinations. |
-| **One command** | `php artisan make:livewiretable UsersTable User` — auto-detects columns. |
-
-## Features
-
-- **Search** — Global full-text search across multiple columns with debounce and join alias support
-- **Sorting** — Single or multi-column sorting with configurable default direction
-- **Filters** — Text, Select, Boolean, Number, NumberRange, Date, DateRange, MultiDate with dependent/cascading support
-- **Pagination** — Laravel native pagination with configurable per-page dropdown
-- **Bulk Actions** — Exclusion-based selection model (instant select-all across pages)
-- **CSV Export** — One-click CSV export from visible columns, or build custom exports
-- **Column Types** — Text, Boolean, Date, Image (with lightbox), Blade (custom views), Action (buttons)
-- **Toolbar Slots** — 6 injection points to add custom content around the table
-- **Lifecycle Hooks** — `onQuerying`, `onQueried`, `onRendering`, `onRendered` + Livewire event dispatch
-- **Dark Mode** — Full dark mode support for all 3 themes, reactive toggle
-- **Themes** — Tailwind CSS, Bootstrap 5, Bootstrap 4 with configurable color palette
-- **Translations** — English, Spanish, Portuguese included (easily extendable)
-- **State Persistence** — Search, filters, sort, and pagination state cached in session
-- **External Refresh** — Dispatch events to refresh tables from other Livewire components
-- **Filter Events** — `table-filters-applied` event dispatched when filters or search change
-- **Artisan Generator** — `php artisan make:livewiretable UsersTable User` with column auto-detection
-
-## Compatibility Matrix
-
-| PHP | Laravel | Livewire | Testbench |
-|-----|---------|----------|-----------|
-| 8.1 | 10.x   | 3.x     | 8.x       |
-| 8.2 | 10.x   | 3.x     | 8.x       |
-| 8.2 | 11.x   | 3.x     | 9.x       |
-| 8.3 | 11.x   | 3.x     | 9.x       |
-| 8.2 | 11.x   | 4.x     | 9.x       |
-| 8.3 | 11.x   | 4.x     | 9.x       |
-| 8.2 | 12.x   | 4.x     | 10.x      |
-| 8.3 | 12.x   | 4.x     | 10.x      |
-| 8.4 | 12.x   | 4.x     | 10.x      |
-
-## Requirements
-
-- **PHP** 8.1, 8.2, 8.3, or 8.4
-- **Laravel** 10.x, 11.x, or 12.x
-- **Livewire** 3.x or 4.x
-- **Alpine.js** (included automatically with Livewire)
-
-## Quick Start
-
-### 1. Install
+## Install
 
 ```bash
 composer require alp-develop/laravel-livewire-tables
 ```
 
-### 2. Tailwind CSS Setup
+If using Tailwind, add to your CSS: `[x-cloak] { display: none !important; }`
 
-If you're using the **Tailwind** theme, add this to your app CSS to prevent Alpine.js flicker:
-
-```css
-[x-cloak] { display: none !important; }
-```
-
-> **Note:** Bootstrap themes do not require this — Alpine.js handles visibility automatically through Livewire.
-
-### 3. Create a Table
+## Quick Start
 
 ```bash
 php artisan make:livewiretable UsersTable User
 ```
-
-### 4. Define Your Table
 
 ```php
 <?php
@@ -106,8 +51,6 @@ class UsersTable extends DataTableComponent
     {
         $this->setDefaultPerPage(25);
         $this->setSearchDebounce(300);
-        $this->setDefaultSortDirection('desc');
-        $this->setEmptyMessage('No users found.');
     }
 
     public function query(): Builder
@@ -122,12 +65,12 @@ class UsersTable extends DataTableComponent
             TextColumn::make('email')->sortable()->searchable(),
             BooleanColumn::make('active')->sortable(),
             TextColumn::make('created_at')
-                ->label('Joined')
-                ->sortable()
-                ->format(fn($value) => $value?->format('M d, Y')),
+                ->label('Joined')->sortable()
+                ->format(fn ($value) => $value?
+                ->format('M d, Y')),
             ActionColumn::make()
-                ->button('Edit', fn($row) => "edit({$row->id})", 'lt-btn-primary')
-                ->button('Delete', fn($row) => "delete({$row->id})", 'lt-btn-primary'),
+                ->button('Edit', fn ($row) => "edit({$row->id})", 'lt-btn-primary')
+                ->button('Delete', fn ($row) => "delete({$row->id})", 'lt-btn-primary'),
         ];
     }
 
@@ -137,7 +80,7 @@ class UsersTable extends DataTableComponent
             SelectFilter::make('active')
                 ->label('Status')
                 ->setOptions(['' => 'All', '1' => 'Active', '0' => 'Inactive'])
-                ->filter(fn(Builder $q, $v) => $q->where('active', (bool) $v)),
+                ->filter(fn (Builder $q, $v) => $q->where('active', (bool) $v)),
         ];
     }
 
@@ -166,15 +109,26 @@ class UsersTable extends DataTableComponent
 }
 ```
 
-### 5. Use in Blade
-
 ```blade
 <livewire:tables.users-table />
 ```
 
+## Features
+
+- **Search** — Full-text across columns with debounce and join alias support
+- **Sorting** — Single or multi-column with configurable direction
+- **Filters** — Text, Select, Boolean, Number, NumberRange, Date, DateRange, MultiDate (with dependent/cascading)
+- **Bulk Actions** — Exclusion-based select-all across pages + CSV export
+- **Column Types** — Text, Boolean, Date, Image (lightbox), Blade (custom views), Action (buttons)
+- **Themes** — Tailwind, Bootstrap 5, Bootstrap 4 with dark mode and custom color palette
+- **State Persistence** — Search, filters, sort cached in session
+- **Toolbar Slots** — 6 injection points for custom content
+- **Lifecycle Hooks** — `onQuerying`, `onQueried`, `onRendering`, `onRendered`
+- **14 Languages** — EN, ES, PT, FR, DE, IT, NL, PL, RU, ZH, JA, KO, TR, ID
+
 ## Color Customization
 
-Change the primary color palette in `config/livewire-tables.php`:
+In `config/livewire-tables.php`:
 
 ```php
 'colors' => [
@@ -188,49 +142,28 @@ Change the primary color palette in `config/livewire-tables.php`:
 ],
 ```
 
-Works identically for both Tailwind and Bootstrap themes.
-
 ## Documentation
 
-| Guide | Description |
-|-------|-------------|
-| [Installation](docs/installation.md) | Installation, configuration, publishing assets |
-| [Columns](docs/columns.md) | Text, Boolean, Date, Image, Action, Blade columns |
-| [Filters](docs/filters.md) | All filter types, dependent filters, custom logic |
+| Guide | |
+|-------|---|
+| [Installation](docs/installation.md) | Setup, config, publishing assets |
+| [Columns](docs/columns.md) | Text, Boolean, Date, Image, Action, Blade |
+| [Filters](docs/filters.md) | All types, dependent filters, custom logic |
 | [Bulk Actions](docs/bulk-actions.md) | Selection model, custom actions, CSV export |
-| [Export](docs/export.md) | Auto CSV export, custom exports, configuration |
-| [Events & Hooks](docs/events.md) | Lifecycle hooks, Livewire dispatch, external refresh |
-| [Toolbar Slots](docs/toolbar-slots.md) | 6 hook points for custom toolbar content |
-| [Theming](docs/theming.md) | Tailwind, Bootstrap, custom themes, color palette |
-| [Configuration](docs/configuration.md) | Config file reference, per-table options, colors |
-| [Joins](docs/joins.md) | Joined table columns, aliases, search on joins |
+| [Export](docs/export.md) | Auto CSV, custom exports |
+| [Events & Hooks](docs/events.md) | Lifecycle hooks, external refresh |
+| [Toolbar Slots](docs/toolbar-slots.md) | 6 hook points for custom content |
+| [Theming](docs/theming.md) | Themes, dark mode, color palette |
+| [Configuration](docs/configuration.md) | Config reference, per-table options |
+| [Joins](docs/joins.md) | Joined columns, aliases, search on joins |
+| [Security](docs/security.md) | Built-in protections, safe callbacks |
 
-## Testing
-
-```bash
-composer test
-```
-
-## Static Analysis
+## Development
 
 ```bash
-composer analyse
+composer test       # Run tests
+composer analyse    # PHPStan level 8
+composer format     # Pint code style
 ```
 
-## Code Style
-
-```bash
-composer format
-```
-
-## Contributing
-
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
-## Changelog
-
-Please see [CHANGELOG.md](CHANGELOG.md) for version history.
-
-## License
-
-The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
+[Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md) · [License](LICENSE)

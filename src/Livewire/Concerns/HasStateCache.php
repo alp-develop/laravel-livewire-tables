@@ -30,11 +30,26 @@ trait HasStateCache
         }
 
         if (isset($state['sortFields']) && is_array($state['sortFields'])) {
-            $this->sortFields = $state['sortFields'];
+            $validSortableFields = array_map(
+                fn ($c) => $c->field(),
+                array_filter($this->resolveColumns(), fn ($c) => $c->isSortable()),
+            );
+            $this->sortFields = array_intersect_key(
+                $state['sortFields'],
+                array_flip($validSortableFields),
+            );
+            $this->sortFields = array_map(
+                fn (mixed $dir): string => is_string($dir) && strtolower($dir) === 'desc' ? 'desc' : 'asc',
+                $this->sortFields,
+            );
         }
 
         if (isset($state['tableFilters']) && is_array($state['tableFilters'])) {
-            $this->tableFilters = $state['tableFilters'];
+            $validFilterKeys = array_map(fn ($f) => $f->getKey(), $this->filters());
+            $this->tableFilters = array_intersect_key(
+                $state['tableFilters'],
+                array_flip($validFilterKeys),
+            );
         }
 
         if (isset($state['perPage']) && is_int($state['perPage'])) {
@@ -42,7 +57,11 @@ trait HasStateCache
         }
 
         if (isset($state['hiddenColumns']) && is_array($state['hiddenColumns'])) {
-            $this->hiddenColumns = $state['hiddenColumns'];
+            $validColumnFields = array_map(fn ($c) => $c->field(), $this->resolveColumns());
+            $this->hiddenColumns = array_values(array_intersect(
+                array_filter($state['hiddenColumns'], 'is_string'),
+                $validColumnFields,
+            ));
         }
     }
 

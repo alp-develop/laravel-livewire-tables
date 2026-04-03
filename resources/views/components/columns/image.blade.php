@@ -1,11 +1,12 @@
 @php
     $src = $column->resolveValue($row);
     $alt = $column->getAltField() ? data_get($row, $column->getAltField()) : '';
+    $safeSrc = is_string($src) && (str_starts_with($src, 'http://') || str_starts_with($src, 'https://') || str_starts_with($src, '/')) ? $src : null;
 @endphp
-@if($src)
+@if($safeSrc)
     <div x-data="{ showLightbox: false }" style="display:flex;align-items:center;justify-content:center">
         <img
-            src="{{ $src }}"
+            src="{{ $safeSrc }}"
             alt="{{ $alt }}"
             style="max-height:64px;width:auto;border-radius:6px;cursor:pointer;display:block"
             loading="lazy"
@@ -29,7 +30,7 @@
                     style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;cursor:pointer"
                 >
                     <img
-                        src="{{ $src }}"
+                        src="{{ $safeSrc }}"
                         alt="{{ $alt }}"
                         @click.stop
                         style="max-width:90vw;max-height:90vh;border-radius:8px;box-shadow:0 25px 50px rgba(0,0,0,0.5);cursor:default"

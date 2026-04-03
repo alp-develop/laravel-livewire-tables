@@ -92,9 +92,9 @@ final class ActionColumn extends Column
                 continue;
             }
 
-            $wireAction = ($action['action'])($row, $table);
+            $wireAction = htmlspecialchars((string) ($action['action'])($row, $table), ENT_QUOTES, 'UTF-8');
             $icon = $action['icon'] ?? '';
-            $class = $action['class'];
+            $class = htmlspecialchars($action['class'], ENT_QUOTES, 'UTF-8');
             $label = e($action['label']);
 
             $html .= "<button type=\"button\" wire:click=\"{$wireAction}\" class=\"{$class}\">{$icon}{$label}</button>";

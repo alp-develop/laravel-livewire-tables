@@ -83,6 +83,21 @@ jobs:
             pest: '^3.7'
             pest-laravel: '^3.1'
 
+          # Laravel 13 — Livewire 4
+          - php: '8.4'
+            laravel: '13.*'
+            livewire: '4.*'
+            testbench: '11.*'
+            pest: '^4.4'
+            pest-laravel: '^4.1'
+
+          - php: '8.5'
+            laravel: '13.*'
+            livewire: '4.*'
+            testbench: '11.*'
+            pest: '^4.4'
+            pest-laravel: '^4.1'
+
     name: PHP ${{ matrix.php }} — Laravel ${{ matrix.laravel }} — Livewire ${{ matrix.livewire }}
 
     steps:

@@ -27,7 +27,7 @@ trait HasSorting
                 unset($this->sortFields[$field]);
             }
         } else {
-            $this->sortFields[$field] = $this->defaultSortDirection ?? 'asc';
+            $this->sortFields[$field] = $this->defaultSortDirection;
         }
 
         $this->resetPage();

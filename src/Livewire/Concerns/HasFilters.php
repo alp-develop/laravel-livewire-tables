@@ -81,9 +81,9 @@ trait HasFilters
     protected function dispatchFiltersChanged(): void
     {
         $this->dispatch('table-filters-applied',
-            tableKey: $this->tableKey ?? '',
+            tableKey: $this->tableKey,
             filters: $this->getAppliedFilters(),
-            search: trim($this->search ?? ''),
+            search: trim($this->search),
         );
     }
 
@@ -96,6 +96,21 @@ trait HasFilters
 
             return $value !== null && $value !== '';
         })) > 0;
+    }
+
+    protected function filterHasActiveValue(string $key): bool
+    {
+        if (! array_key_exists($key, $this->tableFilters)) {
+            return false;
+        }
+
+        $value = $this->tableFilters[$key];
+
+        if (is_array($value)) {
+            return count(array_filter($value, fn ($v) => $v !== null && $v !== '')) > 0;
+        }
+
+        return $value !== null && $value !== '';
     }
 
     public function getFilterValue(string $field): mixed

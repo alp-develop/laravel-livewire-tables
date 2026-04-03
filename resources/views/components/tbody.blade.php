@@ -3,13 +3,14 @@
         <tr class="{{ $classes['tr'] }} {{ $this->resolveRowClass($row) }}">
             @if($this->hasBulkActions())
             <td class="{{ $classes['bulk-checkbox-td'] }}">
+                @php $rowId = \Illuminate\Support\Js::from((string) data_get($row, $row->getKeyName())); @endphp
                 <input
                     type="checkbox"
                     class="{{ $classes['bulk-checkbox'] }}"
                     :checked="$wire.selectAllPages
-                        ? !$wire.excludedIds.includes('{{ (string) data_get($row, 'id') }}')
-                        : $wire.selectedIds.includes('{{ (string) data_get($row, 'id') }}')"
-                    x-on:click="$wire.toggleSelected('{{ (string) data_get($row, 'id') }}')"
+                        ? !$wire.excludedIds.includes({{ $rowId }})
+                        : $wire.selectedIds.includes({{ $rowId }})"
+                    x-on:click="$wire.toggleSelected({{ $rowId }})"
                 />
             </td>
             @endif

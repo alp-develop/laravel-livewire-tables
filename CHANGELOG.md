@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-04-03
+
+### Added
+
+- **Laravel 13 support**: Full compatibility with Laravel 13.
+
+### Security
+
+- **CSV formula injection prevention in export**: Cell values starting with `=`, `+`, `-`, `@`, tab, or carriage return are now prefixed with a single quote to prevent formula execution when opening exported CSV files in Excel or Google Sheets.
+- **XSS prevention in ImageColumn**: Image `src` attributes are now validated against an allowlist of safe URI schemes (`http://`, `https://`, `/`). Values using `javascript:`, `data:`, or other dangerous schemes are rejected and the image is not rendered.
+- **HTML attribute injection prevention in ActionColumn**: The `wire:click` action and `class` attributes in action buttons are now escaped with `htmlspecialchars()` to prevent attribute breakout and XSS.
+- **JavaScript context injection prevention in bulk checkboxes**: Row IDs in bulk action checkboxes now use `Js::from()` for safe JavaScript value encoding instead of raw string interpolation. Also uses dynamic `getKeyName()` instead of hardcoded `'id'`.
+- **SearchStep field sanitization hardening**: The field sanitization in `applyFieldSearch()` no longer falls back to the unsanitized field name on `preg_replace` failure. If sanitization fails or produces an empty string, the field is skipped entirely.
+- **SortStep field sanitization**: Sort field names are now sanitized with the same `[^a-zA-Z0-9_.]` regex as search fields before being passed to `orderBy()`, preventing SQL injection through crafted column identifiers.
+- **Session state validation on load**: `loadStateFromCache()` now validates `sortFields`, `tableFilters`, and `hiddenColumns` against defined columns and filters when restoring from session, matching the validation already applied during `dehydrate()`.
+
+---
+
 ## [1.1.1] - 2026-03-08
 
 ### Fixed

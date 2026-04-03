@@ -6,9 +6,11 @@ namespace Livewire\Tables\Livewire;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Reactive;
 use Livewire\Component;
+use Livewire\Tables\Core\Contracts\ColumnContract;
 use Livewire\Tables\Core\Contracts\FilterContract;
 use Livewire\Tables\Core\Engine;
 use Livewire\Tables\Core\Pipeline\FilterStep;
@@ -120,8 +122,9 @@ abstract class DataTableComponent extends Component
 
         foreach ($this->filters() as $filter) {
             $key = $filter->getKey();
-            if ($filter->hasInitialValue() && ! array_key_exists($key, $this->tableFilters)) {
-                $this->tableFilters[$key] = $filter->getInitialValue();
+            if ($filter->hasInitialValue() && ! $this->filterHasActiveValue($key)) {
+                $normalized = $filter->normalizeValue($filter->getInitialValue());
+                $this->tableFilters[$key] = $normalized;
             }
         }
 
@@ -257,7 +260,7 @@ abstract class DataTableComponent extends Component
         $theme = $themeManager->resolve();
         $themeClasses = $theme->classes();
 
-        if ($this->hasBulkActions() && $rows instanceof \Illuminate\Pagination\LengthAwarePaginator) {
+        if ($this->hasBulkActions() && $rows instanceof LengthAwarePaginator) {
             $keyName = $rows->first()?->getKeyName() ?? 'id';
             $this->pageIds = array_map('strval', $rows->pluck($keyName)->toArray());
         }
@@ -299,7 +302,7 @@ abstract class DataTableComponent extends Component
         return $view;
     }
 
-    /** @param array<int, \Livewire\Tables\Core\Contracts\FilterContract> $filters */
+    /** @param array<int, FilterContract> $filters */
     private function buildActiveFilterChips(array $filters): array
     {
         $chips = [];
@@ -338,7 +341,7 @@ abstract class DataTableComponent extends Component
         return $chips;
     }
 
-    /** @param array<int, \Livewire\Tables\Core\Contracts\ColumnContract> $columns */
+    /** @param array<int, ColumnContract> $columns */
     private function buildSortChips(array $columns): array
     {
         $chips = [];

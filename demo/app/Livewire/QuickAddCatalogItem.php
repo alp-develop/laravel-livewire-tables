@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\CatalogItem;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
 class QuickAddCatalogItem extends Component
@@ -114,7 +115,7 @@ class QuickAddCatalogItem extends Component
         $this->dispatch('catalog-refresh');
     }
 
-    public function render(): \Illuminate\Contracts\View\View
+    public function render(): View
     {
         return view('livewire.quick-add-catalog-item');
     }
