@@ -20,11 +20,37 @@
 
 ## Install
 
+### 1. Require the package
+
 ```bash
 composer require alp-develop/laravel-livewire-tables
 ```
 
-If using Tailwind, add to your CSS: `[x-cloak] { display: none !important; }`
+### 2. Publish and configure
+
+```bash
+php artisan vendor:publish --tag=livewire-tables-config
+```
+
+This creates `config/livewire-tables.php`. **This step is required** — the config defines the theme, colors, dark mode, and other essential settings.
+
+### 3. Themes
+
+Set the theme in `config/livewire-tables.php`:
+
+```php
+'theme' => 'tailwind',
+```
+
+| Theme | Value | Alias |
+|-------|-------|-------|
+| Tailwind CSS | `tailwind` | — |
+| Bootstrap 5 | `bootstrap-5` | `bootstrap5`, `bootstrap` |
+| Bootstrap 4 | `bootstrap-4` | `bootstrap4` |
+
+### 4. Tailwind only
+
+Add to your CSS: `[x-cloak] { display: none !important; }`
 
 ## Quick Start
 
@@ -113,40 +139,29 @@ class UsersTable extends DataTableComponent
 <livewire:tables.users-table />
 ```
 
-## Features
+## Multiple Tables in the Same View
 
-- **Search** — Full-text across columns with debounce and join alias support
-- **Sorting** — Single or multi-column with configurable direction
-- **Filters** — Text, Select, Boolean, Number, NumberRange, Date, DateRange, MultiDate (with dependent/cascading)
-- **Bulk Actions** — Exclusion-based select-all across pages + CSV export
-- **Column Types** — Text, Boolean, Date, Image (lightbox), Blade (custom views), Action (buttons)
-- **Themes** — Tailwind, Bootstrap 5, Bootstrap 4 with dark mode and custom color palette
-- **State Persistence** — Search, filters, sort cached in session
-- **Toolbar Slots** — 6 injection points for custom content
-- **Lifecycle Hooks** — `onQuerying`, `onQueried`, `onRendering`, `onRendered`
-- **14 Languages** — EN, ES, PT, FR, DE, IT, NL, PL, RU, ZH, JA, KO, TR, ID
+When rendering **multiple instances** of the same table component (or different tables that share the same class), assign a unique `table-key` to each one so their state (filters, search, sorting, pagination) is isolated:
 
-## Color Customization
-
-In `config/livewire-tables.php`:
-
-```php
-'colors' => [
-    '50'  => '#eef2ff',
-    '100' => '#e0e7ff',
-    '200' => '#c7d2fe',
-    '400' => '#818cf8',
-    '500' => '#6366f1',
-    '600' => '#4f46e5',
-    '700' => '#4338ca',
-],
+```blade
+<livewire:tables.users-table table-key="users-active" />
+<livewire:tables.users-table table-key="users-archived" />
 ```
+
+You can also pass it dynamically:
+
+```blade
+<livewire:tables.users-table :table-key="'users-' . $section" :table-theme="$theme" />
+```
+
+> If you don't set `table-key`, all instances of the same component will share state via session.
 
 ## Documentation
 
 | Guide | |
 |-------|---|
 | [Installation](docs/installation.md) | Setup, config, publishing assets |
+| [Configuration](docs/configuration.md) | Config reference, per-table options, table key |
 | [Columns](docs/columns.md) | Text, Boolean, Date, Image, Action, Blade |
 | [Filters](docs/filters.md) | All types, dependent filters, custom logic |
 | [Bulk Actions](docs/bulk-actions.md) | Selection model, custom actions, CSV export |
@@ -154,7 +169,7 @@ In `config/livewire-tables.php`:
 | [Events & Hooks](docs/events.md) | Lifecycle hooks, external refresh |
 | [Toolbar Slots](docs/toolbar-slots.md) | 6 hook points for custom content |
 | [Theming](docs/theming.md) | Themes, dark mode, color palette |
-| [Configuration](docs/configuration.md) | Config reference, per-table options |
+| [Dark Mode](docs/dark-mode.md) | `.lt-dark` class, session detection, `$this->darkMode` |
 | [Joins](docs/joins.md) | Joined columns, aliases, search on joins |
 | [Security](docs/security.md) | Built-in protections, safe callbacks |
 

@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-04-06
+
+### Fixed
+
+- **Filter initial values persist after Clear All**: Filters using `initialValue()` no longer re-apply their default value when the page is reloaded after clicking "Clear All". Changed the condition in `mount()` from `filterHasActiveValue()` (which treated empty strings/arrays as "no value") to `array_key_exists()` (which respects cached empty state from a previous clear).
+- **Dark mode selector type**: Changed `dark_mode.selector` from CSS selector (`.lt-dark`) to session key (`lt-dark`) in `config/livewire-tables.php` and `demo/config/livewire-tables.php`. The selector is now used as a Laravel session key, not a CSS class.
+- **Dark mode session-based detection**: `DataTableComponent::boot()` now reads dark mode state from the session (`session($selector)`) instead of relying on a `#[Reactive]` property passed from parent components. Removed `#[Reactive]` attribute and changed `$darkMode` type from `?bool` to `bool`.
+- **Demo dark mode mechanism**: Replaced Livewire-dispatched `dark-mode-changed` event with browser-native `lt-dark-toggled` event in `demo.js`. Removed `onDarkModeChanged()` listener and `$darkMode` property from `DemoPage.php`. Removed `:dark-mode` bindings from Livewire component tags in `demo-page.blade.php`.
+- **Alpine dark mode wrapper**: Added Alpine.js `x-data`/`x-on:lt-dark-toggled` wrapper in `table.blade.php` for instant client-side dark mode toggle without server round trip.
+- **Dark mode chip/badge overrides**: Added missing dark mode CSS overrides for chips, badges, and interactive elements in `styles.blade.php`.
+- **Demo package name**: Corrected `demo/composer.json` package name from `alvitres01/laravel-livewire-tabless` to `alp-develop/laravel-livewire-tables`.
+- **Translation publish tag**: Corrected `--tag=livewire-tables-lang` to `--tag=livewire-tables-translations` in docs to match `LivewireTablesServiceProvider`.
+- **Theming docs theme values**: Updated `docs/theming.md` to list `bootstrap-5`/`bootstrap-4` as primary config values with aliases, consistent with `docs/configuration.md`.
+
+### Changed
+
+- **`tableKey` is now a public `#[Locked]` property**: Changed from `protected` to `public` with Livewire's `#[Locked]` attribute. You can now pass `table-key` directly from Blade tags to isolate state when rendering multiple instances of the same table component: `<livewire:users-table table-key="users-active" />`.
+- **Config publish is now required**: Updated installation docs to reflect that publishing `config/livewire-tables.php` is required, not optional.
+- **README improvements**: Added "Configuration Reference" table describing every config option, added "Multiple Tables in the Same View" section with `table-key` usage examples.
+
+### Added
+
+- **Dark mode documentation**: New `docs/dark-mode.md` guide covering configuration, toggling, session detection, `$this->darkMode`, color presets, and cross-theme support.
+- **Configuration docs**: Added `dark_mode` section, available themes table, and dark mode link to `docs/configuration.md`.
+- **README install section**: Expanded with numbered steps (require, publish config, choose theme, Tailwind tip) and added dark mode doc to the documentation index.
+
 ## [1.2.0] - 2026-04-03
 
 ### Added
@@ -42,7 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **11 new bundled languages**: Added translations for French (`fr`), German (`de`), Italian (`it`), Dutch (`nl`), Polish (`pl`), Russian (`ru`), Chinese Simplified (`zh`), Japanese (`ja`), Korean (`ko`), Turkish (`tr`), and Indonesian (`id`). Total bundled locales: 14. Publishable via `php artisan vendor:publish --tag=livewire-tables-lang`.
+- **11 new bundled languages**: Added translations for French (`fr`), German (`de`), Italian (`it`), Dutch (`nl`), Polish (`pl`), Russian (`ru`), Chinese Simplified (`zh`), Japanese (`ja`), Korean (`ko`), Turkish (`tr`), and Indonesian (`id`). Total bundled locales: 14. Publishable via `php artisan vendor:publish --tag=livewire-tables-translations`.
 - **Demo language selector**: The demo header now includes a language switcher showing all 14 supported locales. Selection is stored in session and applies on next render via Livewire. The selector button label and dropdown item names are fully translated via `languages.php` per locale.
 - **Demo full i18n**: All demo UI text — tab names, section titles, descriptions, stat card labels, modal fields, buttons, and placeholders — is now driven by `__('demo.key')` translations for all 14 locales.
 - **Demo country selector**: The "Add Catalog Item" modal country field is now a `<select>` dropdown with 35 countries, replacing the free-text input.

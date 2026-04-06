@@ -15,7 +15,7 @@ use Livewire\Tables\Livewire\DataTableComponent;
 
 class PerformanceTable extends DataTableComponent
 {
-    protected string $tableKey = 'performance';
+    public string $tableKey = 'performance';
 
     public function configure(): void
     {

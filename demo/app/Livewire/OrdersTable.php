@@ -17,7 +17,7 @@ use Livewire\Tables\Livewire\DataTableComponent;
 
 class OrdersTable extends DataTableComponent
 {
-    protected string $tableKey = 'orders';
+    public string $tableKey = 'orders';
 
     public $param;
 

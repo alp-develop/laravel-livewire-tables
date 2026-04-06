@@ -25,7 +25,7 @@ class BootstrapTestItem extends Model
 // --- Inline Component -------------------------------------------------------
 class BootstrapCustomClassTable extends DataTableComponent
 {
-    protected string $tableKey = 'bs-custom-test';
+    public string $tableKey = 'bs-custom-test';
 
     public function configure(): void
     {

@@ -18,19 +18,11 @@ class DemoPage extends Component
 {
     public string $theme = 'tailwind';
 
-    public bool $darkMode = false;
-
     public string $language = 'en';
 
     public array $activeFilters = [];
 
     public array $searchTerms = [];
-
-    #[On('dark-mode-changed')]
-    public function onDarkModeChanged(bool $active): void
-    {
-        $this->darkMode = $active;
-    }
 
     #[On('table-filters-applied')]
     public function onFiltersApplied(string $tableKey, array $filters, string $search = ''): void

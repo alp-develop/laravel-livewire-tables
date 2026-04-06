@@ -152,7 +152,7 @@
     @if(config('livewire-tables.dark_mode.enabled', false))
     /* ═══════════════ DARK MODE ═══════════════ */
     @php
-        $dk = config('livewire-tables.dark_mode.selector', '.lt-dark');
+        $dk = '.lt-dark';
         $dc = config('livewire-tables.dark_mode.colors', []);
         $dBg       = $dc['bg']         ?? '#0f172a';
         $dCard     = $dc['bg-card']    ?? '#1e293b';
@@ -281,6 +281,19 @@
     {{ $dk }} .text-sky-700{color:#7dd3fc!important}
     {{ $dk }} .border-b{border-color:var(--lt-border)!important}
     {{ $dk }} .border-transparent{border-color:transparent!important}
+
+    /* ── Chip / badge dark overrides ── */
+    {{ $dk }} .lt-bg-50{background-color:rgba(255,255,255,.08)!important}
+    {{ $dk }} .lt-bg-50-muted{background-color:rgba(255,255,255,.05)!important}
+    {{ $dk }} .lt-text-700{color:var(--lt-primary-400)!important}
+    {{ $dk }} .lt-text-400{color:var(--lt-primary-400)!important}
+    {{ $dk }} .lt-ring-200{--tw-ring-color:var(--lt-border)}
+    {{ $dk }} .lt-badge-primary-soft{background-color:rgba(255,255,255,.08)!important;color:var(--lt-primary-400)!important;border-color:var(--lt-border)!important}
+    {{ $dk }} .lt-hover-bg-100:hover{background-color:rgba(255,255,255,.12)!important}
+    {{ $dk }} .lt-hover-text-600:hover{color:var(--lt-primary-400)!important}
+    {{ $dk }} .lt-text-500{color:var(--lt-primary-400)!important}
+    {{ $dk }} .lt-text-600{color:var(--lt-primary-400)!important}
+    {{ $dk }} .lt-hover-text-700:hover{color:var(--lt-primary-200)!important}
 
     /* ── Flatpickr dark mode ── */
     {{ $dk }} .flatpickr-calendar{background:var(--lt-bg-card)!important;border-color:var(--lt-border)!important;box-shadow:0 4px 12px rgba(0,0,0,.4)!important}

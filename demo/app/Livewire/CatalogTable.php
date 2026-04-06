@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CatalogTable extends DataTableComponent
 {
-    protected string $tableKey = 'catalog';
+    public string $tableKey = 'catalog';
 
     public function configure(): void
     {

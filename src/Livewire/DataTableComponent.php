@@ -8,7 +8,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Locked;
-use Livewire\Attributes\Reactive;
 use Livewire\Component;
 use Livewire\Tables\Core\Contracts\ColumnContract;
 use Livewire\Tables\Core\Contracts\FilterContract;
@@ -52,8 +51,7 @@ abstract class DataTableComponent extends Component
     #[Locked]
     public string $tableTheme = '';
 
-    #[Reactive]
-    public ?bool $darkMode = false;
+    public bool $darkMode = false;
 
     abstract public function query(): Builder;
 
@@ -104,6 +102,11 @@ abstract class DataTableComponent extends Component
             app(ThemeManager::class)->use($this->tableTheme);
         }
 
+        if (config('livewire-tables.dark_mode.enabled', false)) {
+            $selector = config('livewire-tables.dark_mode.selector', 'lt-dark');
+            $this->darkMode = (bool) session($selector, false);
+        }
+
         $this->loadConfiguration();
         $this->configure();
     }
@@ -122,7 +125,7 @@ abstract class DataTableComponent extends Component
 
         foreach ($this->filters() as $filter) {
             $key = $filter->getKey();
-            if ($filter->hasInitialValue() && ! $this->filterHasActiveValue($key)) {
+            if ($filter->hasInitialValue() && ! array_key_exists($key, $this->tableFilters)) {
                 $normalized = $filter->normalizeValue($filter->getInitialValue());
                 $this->tableFilters[$key] = $normalized;
             }

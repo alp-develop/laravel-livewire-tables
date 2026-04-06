@@ -24,7 +24,6 @@ ARCHITECTURE.md
 
 demo/vendor/
 demo/node_modules/
-demo/.env
 demo/composer.lock
 demo/storage/framework/
 demo/storage/logs/

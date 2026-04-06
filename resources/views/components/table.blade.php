@@ -1,3 +1,9 @@
+<div>
+@if(config('livewire-tables.dark_mode.enabled', false))
+<div x-data="{ ltDark: document.documentElement.classList.contains('lt-dark') }"
+     x-on:lt-dark-toggled.window="ltDark = document.documentElement.classList.contains('lt-dark')"
+     :class="ltDark ? 'lt-dark' : ''">
+@endif
 <div class="{{ $classes['container'] }}">
     @include('livewire-tables::components.styles')
     @once
@@ -221,4 +227,8 @@
             @endif
         </div>
     </div>
+</div>
+@if(config('livewire-tables.dark_mode.enabled', false))
+</div>
+@endif
 </div>

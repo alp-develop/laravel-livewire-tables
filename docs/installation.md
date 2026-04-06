@@ -4,9 +4,9 @@
 
 | Dependency | Version                       |
 |------------|-------------------------------|
-| PHP        | 8.1 – 8.4                    |
-| Laravel    | 10.x, 11.x, or 12.x         |
-| Livewire   | 3.x or 4.x                   |
+| PHP        | 8.x+                         |
+| Laravel    | 10.x+                        |
+| Livewire   | 3.x, 4.x                    |
 
 ## Install via Composer
 
@@ -16,13 +16,13 @@ composer require alp-develop/laravel-livewire-tables
 
 The package auto-discovers its service provider. No manual registration is needed.
 
-## Publish Config (Optional)
+## Publish Config (Required)
 
 ```bash
 php artisan vendor:publish --tag=livewire-tables-config
 ```
 
-This publishes `config/livewire-tables.php` with theme, color palette, search debounce, and namespace settings.
+This publishes `config/livewire-tables.php` where you configure the theme, color palette, dark mode, search debounce, and component namespace. **This step is required** for the package to work correctly.
 
 ## Publish Views (Optional)
 
@@ -35,12 +35,12 @@ Views will be copied to `resources/views/vendor/livewire-tables/`.
 ## Publish Translations (Optional)
 
 ```bash
-php artisan vendor:publish --tag=livewire-tables-lang
+php artisan vendor:publish --tag=livewire-tables-translations
 ```
 
 Translations will be copied to `lang/vendor/livewire-tables/`.
 
-Included languages: English (`en`), Spanish (`es`), Portuguese (`pt`).
+Included languages: English (`en`), Spanish (`es`), Portuguese (`pt`), French (`fr`), German (`de`), Italian (`it`), Dutch (`nl`), Polish (`pl`), Russian (`ru`), Chinese (`zh`), Japanese (`ja`), Korean (`ko`), Turkish (`tr`), Indonesian (`id`).
 
 ## Generate a Table
 
@@ -62,13 +62,18 @@ php artisan make:livewiretable Admin/UsersTable User
 <livewire:tables.users-table />
 ```
 
-## Bootstrap Theme
+## Themes
 
-To use Bootstrap 5 instead of Tailwind:
+Set the theme in `config/livewire-tables.php`:
 
 ```php
-// config/livewire-tables.php
-'theme' => 'bootstrap',
+'theme' => 'tailwind',
 ```
 
-Make sure Bootstrap 5 CSS is loaded in your layout.
+| Theme | Value | Alias |
+|-------|-------|-------|
+| Tailwind CSS | `tailwind` | — |
+| Bootstrap 5 | `bootstrap-5` | `bootstrap5`, `bootstrap` |
+| Bootstrap 4 | `bootstrap-4` | `bootstrap4` |
+
+Make sure the corresponding CSS framework is loaded in your layout.

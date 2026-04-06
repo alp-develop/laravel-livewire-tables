@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace Livewire\Tables\Livewire\Concerns;
 
+use Livewire\Attributes\Locked;
+
 trait HasStateCache
 {
-    protected string $tableKey = '';
+    #[Locked]
+    public string $tableKey = '';
 
     public function getTableKey(): string
     {
-        if ($this->tableKey === '') {
-            return 'lwt_'.substr(md5(static::class), 0, 12);
+        if ($this->tableKey !== '') {
+            return 'lwt_'.$this->tableKey;
         }
 
-        return 'lwt_'.$this->tableKey;
+        return 'lwt_'.substr(md5(static::class), 0, 12);
     }
 
     protected function loadStateFromCache(): void

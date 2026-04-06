@@ -21,7 +21,7 @@ use Livewire\Tables\Livewire\DataTableComponent;
 
 class ProductsTable extends DataTableComponent
 {
-    protected string $tableKey = 'products';
+    public string $tableKey = 'products';
 
     public function configure(): void
     {

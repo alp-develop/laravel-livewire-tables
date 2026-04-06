@@ -28,11 +28,7 @@
         var isDark = cl.contains('lt-dark');
         localStorage.setItem('lt-dark', isDark ? '1' : '0');
         updateIcon(document.querySelector('.lt-dark-toggle'));
-
-        // Notify all Livewire table components so they re-configure
-        if (typeof Livewire !== 'undefined') {
-            Livewire.dispatch('dark-mode-changed', { active: isDark });
-        }
+        window.dispatchEvent(new Event('lt-dark-toggled'));
     }
 
     // Expose toggle globally for the onclick handler
@@ -41,14 +37,6 @@
     // Set correct icon on initial load
     document.addEventListener('DOMContentLoaded', function () {
         updateIcon(document.querySelector('.lt-dark-toggle'));
-    });
-
-    // Sync dark mode state to Livewire components once they are ready
-    document.addEventListener('livewire:init', function () {
-        var isDark = document.documentElement.classList.contains('lt-dark');
-        if (isDark) {
-            Livewire.dispatch('dark-mode-changed', { active: true });
-        }
     });
 
     // Close language dropdown when clicking outside

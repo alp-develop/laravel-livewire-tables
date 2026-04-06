@@ -4,17 +4,18 @@ The theme system uses a driver pattern. Themes implement `ThemeContract` and are
 
 ## Built-in Themes
 
-| Theme | Config Value | Description |
-|-------|-------------|-------------|
-| Tailwind CSS | `tailwind` | Default theme with utility classes |
-| Bootstrap 5 | `bootstrap` | Bootstrap 5 component classes |
+| Theme | Config Value | Aliases | Description |
+|-------|-------------|---------|-------------|
+| Tailwind CSS | `tailwind` | — | Default theme with utility classes |
+| Bootstrap 5 | `bootstrap-5` | `bootstrap5`, `bootstrap` | Bootstrap 5 component classes |
+| Bootstrap 4 | `bootstrap-4` | `bootstrap4` | Bootstrap 4 component classes |
 
 ## Configuration
 
 Set the active theme in `config/livewire-tables.php`:
 
 ```php
-'theme' => 'tailwind', // or 'bootstrap'
+'theme' => 'tailwind',
 ```
 
 ## Primary Color Customization

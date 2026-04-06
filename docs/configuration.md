@@ -1,5 +1,14 @@
 # Configuration
 
+**Contents:**
+- [Global Configuration](#global-configuration)
+- [Table Key](#table-key)
+- [Translations](#translations)
+- [Color Palette](#color-palette)
+- [Per-Table Configuration](#per-table-configuration)
+- [Available Methods](#available-methods)
+- [Lifecycle Hooks](#lifecycle-hooks)
+
 ## Global Configuration
 
 Publish the config file:
@@ -22,6 +31,18 @@ return [
         '600' => '#0d9488',
         '700' => '#0f766e',
     ],
+    'dark_mode' => [
+        'enabled' => false,
+        'selector' => 'lt-dark',
+        'colors' => [
+            'bg' => '#0f172a',
+            'bg-card' => '#1e293b',
+            'bg-subtle' => '#334155',
+            'border' => '#334155',
+            'text' => '#f1f5f9',
+            'text-muted' => '#94a3b8',
+        ],
+    ],
     'search_debounce' => 300,
     'component_namespace' => 'Tables',
 ];
@@ -29,10 +50,86 @@ return [
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `theme` | `tailwind` | CSS framework theme (`tailwind` or `bootstrap`) |
-| `colors` | Teal palette | Primary color palette (7 shades) |
-| `search_debounce` | `300` | Delay before search executes (ms) |
-| `component_namespace` | `Tables` | Namespace for generated components |
+| `theme` | `tailwind` | CSS framework theme used to render all table components. Supports `'tailwind'`, `'bootstrap-5'`, `'bootstrap-4'` and their aliases (see table below). |
+| `colors` | Teal palette | Primary color palette with 7 shades (50, 100, 200, 400, 500, 600, 700). Used across buttons, checkboxes, pagination, badges, and selection bar. Maps to CSS variables `--lt-primary-50` through `--lt-primary-700`. Works identically for Tailwind and Bootstrap. |
+| `dark_mode.enabled` | `false` | Enables dark mode support. Injects dark CSS rules scoped to the `lt-dark` class on `<html>`. |
+| `dark_mode.selector` | `lt-dark` | Session key used to detect dark mode state server-side. Activate with: `session(['lt-dark' => true])`. |
+| `dark_mode.colors` | Slate palette | Dark mode color palette with 6 keys: `bg` (page background), `bg-card` (panel/table background), `bg-subtle` (thead, stripes, hover), `border` (borders/dividers), `text` (primary text), `text-muted` (secondary text). |
+| `search_debounce` | `300` | Milliseconds to wait after the user stops typing before executing the search query. Recommended: 300–500 for a smooth experience. |
+| `component_namespace` | `Tables` | Subdirectory inside `app/Livewire/` where `make:livewiretable` generates new table components. Example: `'Tables'` generates in `app/Livewire/Tables/`. |
+
+### Available Themes
+
+| Theme | Value | Aliases |
+|-------|-------|---------|
+| Tailwind CSS | `tailwind` | — |
+| Bootstrap 5 | `bootstrap-5` | `bootstrap5`, `bootstrap` |
+| Bootstrap 4 | `bootstrap-4` | `bootstrap4` |
+
+```php
+'theme' => 'tailwind',
+'theme' => 'bootstrap5',
+'theme' => 'bootstrap4',
+```
+
+## Table Key
+
+Each table uses a `tableKey` to isolate its state (filters, search, sorting, pagination) in the session. By default, the key is derived from the class name.
+
+When rendering **multiple instances** of the same table component in one view, assign a unique `table-key` to each one:
+
+```blade
+<livewire:tables.users-table table-key="users-active" />
+<livewire:tables.users-table table-key="users-archived" />
+```
+
+You can also pass it dynamically:
+
+```blade
+<livewire:tables.users-table :table-key="'users-' . $section" :table-theme="$theme" />
+```
+
+Or set it directly in the component class:
+
+```php
+class UsersTable extends DataTableComponent
+{
+    public string $tableKey = 'users';
+}
+```
+
+> If you don't set `table-key`, all instances of the same component will share state via session.
+
+## Translations
+
+The package includes translations for 14 languages:
+
+| Language | Code |
+|----------|------|
+| English | `en` |
+| Spanish | `es` |
+| Portuguese | `pt` |
+| French | `fr` |
+| German | `de` |
+| Italian | `it` |
+| Dutch | `nl` |
+| Polish | `pl` |
+| Russian | `ru` |
+| Chinese | `zh` |
+| Japanese | `ja` |
+| Korean | `ko` |
+| Turkish | `tr` |
+| Indonesian | `id` |
+
+Publish translations to customize them:
+
+```bash
+php artisan vendor:publish --tag=livewire-tables-translations
+```
+
+Files will be copied to `lang/vendor/livewire-tables/`.
+
+For dark mode setup and activation methods, see [Dark Mode](dark-mode.md).
 
 ## Color Palette
 
@@ -199,25 +296,4 @@ On subsequent Livewire requests:
 boot() → configure() → query() → Engine::process() → render()
 ```
 
-## Table Key
 
-Set a unique identifier for targeted events and state caching:
-
-```php
-public string $tableKey = 'users';
-```
-
-Used for:
-- Targeted refresh events (`users-refresh`)
-- State cache differentiation
-- Multiple tables on one page
-
-## Translations
-
-The package includes translations for `en`, `es`, and `pt`. Publish to customize:
-
-```bash
-php artisan vendor:publish --tag=livewire-tables-lang
-```
-
-Translation keys use the `livewire-tables::messages` namespace.

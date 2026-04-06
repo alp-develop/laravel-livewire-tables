@@ -53,20 +53,22 @@ return [
     |--------------------------------------------------------------------------
     |
     | Enable dark mode support for the data tables. When enabled, the package
-    | will inject CSS that automatically styles tables for dark backgrounds
-    | whenever the configured selector is present on a parent element.
+    | injects dark CSS rules scoped to the 'lt-dark' class. Toggle dark mode
+    | by adding/removing 'lt-dark' on <html> and dispatching the browser event
+    | 'lt-dark-toggled'. The table uses Alpine.js to react instantly without
+    | any server round trip.
     |
-    | 'enabled'  — Whether dark mode CSS is injected (default: false).
-    | 'selector' — The CSS selector that activates dark mode.
-    |              Common choices: ".dark" (Tailwind default), ".lt-dark",
-    |              "[data-bs-theme=dark]" (Bootstrap 5.3), "body.dark-mode".
+    | 'enabled'  — Whether dark mode support is active (default: false).
+    | 'selector' — Session key used to detect dark mode state (default: 'lt-dark').
+    |              Store a truthy value in this session key to activate dark mode
+    |              server-side: session(['lt-dark' => true])
     | 'colors'   — Customize the dark mode palette:
-    |              bg         → Page / outer background
-    |              bg-card    → Card / panel / table container background
-    |              bg-subtle  → Subtle backgrounds (thead, stripes, hover)
-    |              border     → Borders and dividers
-    |              text       → Primary text color
-    |              text-muted → Secondary / muted text color
+    |             bg         → Page / outer background
+    |             bg-card    → Card / panel / table container background
+    |             bg-subtle  → Subtle backgrounds (thead, stripes, hover)
+    |             border     → Borders and dividers
+    |             text       → Primary text color
+    |             text-muted → Secondary / muted text color
     |
     | Presets:
     |   Slate (default): bg:#0f172a bg-card:#1e293b bg-subtle:#334155 border:#334155 text:#f1f5f9 text-muted:#94a3b8
@@ -77,7 +79,7 @@ return [
 
     'dark_mode' => [
         'enabled' => false,
-        'selector' => '.lt-dark',
+        'selector' => 'lt-dark',
         'colors' => [
             'bg' => '#0f172a',
             'bg-card' => '#1e293b',

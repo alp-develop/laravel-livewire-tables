@@ -76,7 +76,7 @@
                     <p class="lt-stat-label">{{ __('demo.stat_avg_price') }}</p>
                 </div>
             </div>
-            <livewire:products-table :table-theme="$theme" :dark-mode="$darkMode" />
+            <livewire:products-table :table-theme="$theme" :table-key="'products-' . $theme" />
         </div>
 
         {{-- ═══════════════ ORDERS TAB ═══════════════ --}}
@@ -103,7 +103,7 @@
                     <p class="lt-stat-label">{{ __('demo.stat_total_revenue') }}</p>
                 </div>
             </div>
-            <livewire:orders-table :param="'test'" :table-theme="$theme" :dark-mode="$darkMode" />
+            <livewire:orders-table :param="'test'" :table-theme="$theme" :table-key="'orders-' . $theme" />
         </div>
 
         {{-- ═══════════════ PERFORMANCE TAB ═══════════════ --}}
@@ -130,7 +130,7 @@
                     <p class="lt-stat-label">{{ __('demo.stat_avg_salary') }}</p>
                 </div>
             </div>
-            <livewire:performance-table :table-theme="$theme" :dark-mode="$darkMode" />
+            <livewire:performance-table :table-theme="$theme" :table-key="'performance-' . $theme" />
         </div>
 
         {{-- ═══════════════ CATALOG TAB ═══════════════ --}}
@@ -157,7 +157,7 @@
                     <p class="lt-stat-label">{{ __('demo.stat_avg_price') }}</p>
                 </div>
             </div>
-            <livewire:catalog-table :table-theme="$theme" :dark-mode="$darkMode" />
+            <livewire:catalog-table :table-theme="$theme" :table-key="'catalog-' . $theme" />
         </div>
 
     </main>

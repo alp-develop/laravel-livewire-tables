@@ -73,7 +73,7 @@ return [
 
     'dark_mode' => [
         'enabled' => true,
-        'selector' => '.lt-dark',
+        'selector' => 'lt-dark',
     ],
 
 ];
