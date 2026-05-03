@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Livewire\Tables\Livewire\Concerns;
 
+/**
+ * @requires HasStateCache  (tableKey)
+ * @requires \Livewire\WithPagination  (resetPage)
+ */
 trait HasListeners
 {
     protected string $refreshEvent = '';
@@ -22,7 +26,7 @@ trait HasListeners
 
         $raw = $this->tableKey !== ''
             ? $this->tableKey
-            : substr(md5(static::class), 0, 12);
+            : md5(static::class);
 
         return $raw.'-refresh';
     }

@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Livewire\Tables\Livewire\Concerns;
 
+/**
+ * @requires HasColumns  (resolveColumns)
+ * @requires \Livewire\WithPagination  (resetPage)
+ */
 trait HasSorting
 {
     /** @var array<string, string> */

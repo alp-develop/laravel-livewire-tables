@@ -42,6 +42,9 @@ trait HasConfiguration
 
     protected string $bulkBtnActiveClassValue = '';
 
+    /** @var array<int, string> */
+    protected array $eagerLoad = [];
+
     protected function loadConfiguration(): void
     {
         $this->searchDebounce = (int) config('livewire-tables.search_debounce', 300);
@@ -223,6 +226,22 @@ trait HasConfiguration
     public function getBulkBtnActiveClass(): string
     {
         return $this->bulkBtnActiveClassValue;
+    }
+
+    /**
+     * @param array<int, string> $relations
+     */
+    protected function setEagerLoad(array $relations): static
+    {
+        $this->eagerLoad = $relations;
+
+        return $this;
+    }
+
+    /** @return array<int, string> */
+    public function getEagerLoad(): array
+    {
+        return $this->eagerLoad;
     }
 
     /** @return array<int, int> */
