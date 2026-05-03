@@ -113,7 +113,9 @@ test('executeBulkAction with specific ids deletes correct rows', function (): vo
     $ids = BulkItem::whereIn('name', ['Alpha', 'Beta'])->pluck('id')->map(fn ($id) => (string) $id)->toArray();
 
     $component = Livewire::test(BulkTableComponent::class);
-    $component->set('selectedIds', $ids);
+    foreach ($ids as $id) {
+        $component->call('toggleSelected', $id);
+    }
     $component->call('executeBulkAction', 'delete');
 
     expect(BulkItem::count())->toBe(3)
@@ -125,7 +127,9 @@ test('executeBulkAction resets selectedIds after execution', function (): void {
     $ids = BulkItem::pluck('id')->map(fn ($id) => (string) $id)->toArray();
 
     $component = Livewire::test(BulkTableComponent::class);
-    $component->set('selectedIds', $ids);
+    foreach ($ids as $id) {
+        $component->call('toggleSelected', $id);
+    }
     $component->call('executeBulkAction', 'delete');
 
     expect($component->get('selectedIds'))->toBe([])
@@ -134,7 +138,7 @@ test('executeBulkAction resets selectedIds after execution', function (): void {
 
 test('executeBulkAction with selectAllPages deletes all rows', function (): void {
     $component = Livewire::test(BulkTableComponent::class);
-    $component->set('selectAllPages', true);
+    $component->call('selectAllAcrossPages');
     $component->call('executeBulkAction', 'delete');
 
     expect(BulkItem::count())->toBe(0);
@@ -143,7 +147,7 @@ test('executeBulkAction with selectAllPages deletes all rows', function (): void
 test('executeBulkAction with selectAllPages and active filter deletes only filtered rows', function (): void {
     $component = Livewire::test(BulkTableComponent::class);
     $component->set('tableFilters', ['name' => 'Alpha']);
-    $component->set('selectAllPages', true);
+    $component->call('selectAllAcrossPages');
     $component->call('executeBulkAction', 'delete');
 
     expect(BulkItem::count())->toBe(4)
@@ -152,7 +156,6 @@ test('executeBulkAction with selectAllPages and active filter deletes only filte
 
 test('executeBulkAction does nothing when component has no bulk actions', function (): void {
     $component = Livewire::test(BulkTableNoActions::class);
-    $component->set('selectedIds', ['1', '2']);
 
     expect(fn () => $component->call('executeBulkAction', 'delete'))->not->toThrow(Exception::class);
     expect(BulkItem::count())->toBe(5);
@@ -160,8 +163,7 @@ test('executeBulkAction does nothing when component has no bulk actions', functi
 
 test('deselectAll via Livewire resets state', function (): void {
     $component = Livewire::test(BulkTableComponent::class);
-    $component->set('selectedIds', ['1', '2', '3']);
-    $component->set('selectAllPages', true);
+    $component->call('selectAllAcrossPages');
     $component->call('deselectAll');
 
     expect($component->get('selectedIds'))->toBe([])
@@ -173,8 +175,8 @@ test('executeBulkAction with selectAllPages and excludedIds skips excluded rows'
     $excludedId = (string) BulkItem::where('name', 'Alpha')->value('id');
 
     $component = Livewire::test(BulkTableComponent::class);
-    $component->set('selectAllPages', true);
-    $component->set('excludedIds', [$excludedId]);
+    $component->call('selectAllAcrossPages');
+    $component->call('toggleSelected', $excludedId);
     $component->call('executeBulkAction', 'delete');
 
     expect(BulkItem::count())->toBe(1)
@@ -183,7 +185,6 @@ test('executeBulkAction with selectAllPages and excludedIds skips excluded rows'
 
 test('executeBulkAction does nothing for unknown action', function (): void {
     $component = Livewire::test(BulkTableComponent::class);
-    $component->set('selectedIds', ['1', '2']);
 
     expect(fn () => $component->call('executeBulkAction', 'nonexistent'))->not->toThrow(Exception::class);
     expect(BulkItem::count())->toBe(5);
@@ -193,8 +194,8 @@ test('executeBulkAction resets excludedIds after execution', function (): void {
     $excludedId = (string) BulkItem::where('name', 'Alpha')->value('id');
 
     $component = Livewire::test(BulkTableComponent::class);
-    $component->set('selectAllPages', true);
-    $component->set('excludedIds', [$excludedId]);
+    $component->call('selectAllAcrossPages');
+    $component->call('toggleSelected', $excludedId);
     $component->call('executeBulkAction', 'delete');
 
     expect($component->get('excludedIds'))->toBe([])
@@ -205,7 +206,9 @@ test('getSelectedIds returns selectedIds when selectAllPages is false', function
     $ids = BulkItem::whereIn('name', ['Alpha', 'Beta'])->pluck('id')->map(fn ($id) => (string) $id)->toArray();
 
     $component = Livewire::test(BulkTableComponent::class);
-    $component->set('selectedIds', $ids);
+    foreach ($ids as $id) {
+        $component->call('toggleSelected', $id);
+    }
 
     expect($component->instance()->getSelectedIds())->toEqualCanonicalizing($ids);
 });
@@ -216,8 +219,8 @@ test('getSelectedIds returns all ids minus excluded when selectAllPages is true'
     $expect = array_values(array_diff($all, $exclude));
 
     $component = Livewire::test(BulkTableComponent::class);
-    $component->set('selectAllPages', true);
-    $component->set('excludedIds', $exclude);
+    $component->call('selectAllAcrossPages');
+    $component->call('toggleSelected', $exclude[0]);
 
     expect($component->instance()->getSelectedIds())->toEqualCanonicalizing($expect);
 });

@@ -132,3 +132,28 @@ test('filter step skips empty filter values', function (): void {
 
     expect($applied)->toBeFalse();
 });
+
+test('filter step ignores filter keys not defined in filters list', function (): void {
+    $applied = false;
+
+    $filter = TextFilter::make('name')
+        ->filter(function ($query, $value) use (&$applied) {
+            $applied = true;
+
+            return $query->where('name', $value);
+        });
+
+    $state = new State(
+        search: '',
+        sortFields: [],
+        filters: ['injected_key' => 'malicious', '__proto__' => 'hack'],
+        perPage: 10,
+        page: 1,
+    );
+
+    $builder = makeFilterModel()->newQuery();
+    $step = new FilterStep([$filter]);
+    $step->apply($builder, $state);
+
+    expect($applied)->toBeFalse();
+});
