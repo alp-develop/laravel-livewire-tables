@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * @requires HasFilters   (resolveFilters, tableFilters)
  * @requires HasSearch    (search)
  * @requires HasBulkActions (selectAllPages, selectedIds, excludedIds, getSelectedIds)
+ *
  * @method array<int,string> selectColumns() Returns explicit SELECT columns; empty array = SELECT *
  */
 trait HasExport

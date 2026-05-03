@@ -229,7 +229,7 @@ trait HasConfiguration
     }
 
     /**
-     * @param array<int, string> $relations
+     * @param  array<int, string>  $relations
      */
     protected function setEagerLoad(array $relations): static
     {

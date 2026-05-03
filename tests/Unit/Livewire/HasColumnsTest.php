@@ -3,13 +3,12 @@
 declare(strict_types=1);
 
 use Livewire\Tables\Columns\TextColumn;
-use Livewire\Tables\Core\Contracts\ColumnContract;
 use Livewire\Tables\Livewire\Concerns\HasBulkActions;
 use Livewire\Tables\Livewire\Concerns\HasColumns;
 
 function makeColumnsActor(array $cols, array $hidden = []): object
 {
-    return new class ($cols, $hidden)
+    return new class($cols, $hidden)
     {
         use HasBulkActions;
         use HasColumns;
@@ -43,7 +42,7 @@ test('getAllColumns returns visible non-hiddenIf columns', function (): void {
 test('getAllColumns returns same instance on repeated calls (cached)', function (): void {
     $calls = 0;
 
-    $actor = new class ($calls)
+    $actor = new class($calls)
     {
         use HasBulkActions;
         use HasColumns;

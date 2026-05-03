@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
 use Livewire\Tables\Columns\Column;
 use Livewire\Tables\Filters\SelectFilter;
-use Livewire\Tables\Filters\TextFilter;
 use Livewire\Tables\Livewire\DataTableComponent;
 
 class ExportSecModel extends Model
@@ -59,7 +58,7 @@ beforeEach(function (): void {
         ['name' => '+malicious', 'code' => 'b'],
         ['name' => '-also-bad', 'code' => 'a'],
         ['name' => '@sum(A1:A9)', 'code' => 'b'],
-        ['name' => "normal value", 'code' => 'a'],
+        ['name' => 'normal value', 'code' => 'a'],
     ]);
 });
 

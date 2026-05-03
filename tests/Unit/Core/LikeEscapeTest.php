@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
+use Livewire\Tables\Columns\TextColumn;
 use Livewire\Tables\Core\Contracts\StateContract;
 use Livewire\Tables\Core\Pipeline\SearchStep;
 use Livewire\Tables\Core\State;
@@ -48,7 +48,7 @@ test('SearchStep escapes percent wildcard in search term', function (): void {
     ]);
 
     $columns = [
-        \Livewire\Tables\Columns\TextColumn::make('name')->searchable(),
+        TextColumn::make('name')->searchable(),
     ];
 
     $step = new SearchStep($columns);
@@ -69,7 +69,7 @@ test('SearchStep escapes underscore wildcard in search term', function (): void 
     ]);
 
     $columns = [
-        \Livewire\Tables\Columns\TextColumn::make('name')->searchable(),
+        TextColumn::make('name')->searchable(),
     ];
 
     $step = new SearchStep($columns);
@@ -118,7 +118,7 @@ test('SearchStep truncates search term to 200 characters', function (): void {
     $state = makeLikeState($longSearch);
 
     $columns = [
-        \Livewire\Tables\Columns\TextColumn::make('name')->searchable(),
+        TextColumn::make('name')->searchable(),
     ];
 
     $step = new SearchStep($columns);
@@ -131,7 +131,7 @@ test('SearchStep truncates search term to 200 characters', function (): void {
 
 test('SearchStep sanitizes field name by stripping non-alphanumeric chars except dot and underscore', function (): void {
     $columns = [
-        \Livewire\Tables\Columns\TextColumn::make('name')->searchable(),
+        TextColumn::make('name')->searchable(),
     ];
 
     $step = new SearchStep($columns);
@@ -148,7 +148,7 @@ test('SearchStep sanitizes field name by stripping non-alphanumeric chars except
 test('SearchStep passes already-truncated search term to custom search callback', function (): void {
     $receivedSearch = null;
 
-    $column = \Livewire\Tables\Columns\TextColumn::make('name')
+    $column = TextColumn::make('name')
         ->searchable(function ($query, $search) use (&$receivedSearch) {
             $receivedSearch = $search;
 

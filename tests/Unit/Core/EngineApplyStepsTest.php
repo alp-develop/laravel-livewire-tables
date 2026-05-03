@@ -47,7 +47,7 @@ function makeEngineState(): StateContract
 test('applySteps applies each step to the query', function (): void {
     $called = [];
 
-    $stepA = new class ($called, 'A') implements StepContract
+    $stepA = new class($called, 'A') implements StepContract
     {
         public function __construct(private array &$called, private string $name) {}
 
@@ -59,7 +59,7 @@ test('applySteps applies each step to the query', function (): void {
         }
     };
 
-    $stepB = new class ($called, 'B') implements StepContract
+    $stepB = new class($called, 'B') implements StepContract
     {
         public function __construct(private array &$called, private string $name) {}
 
@@ -111,7 +111,7 @@ test('applySteps with no steps returns original query unchanged', function (): v
 test('process calls applySteps before paginating', function (): void {
     $applied = false;
 
-    $step = new class ($applied) implements StepContract
+    $step = new class($applied) implements StepContract
     {
         public function __construct(private bool &$applied) {}
 
@@ -135,7 +135,7 @@ test('process calls applySteps before paginating', function (): void {
 test('Engine can be extended via subclass to override addStep behavior', function (): void {
     $steps = [];
 
-    $customEngine = new class ($steps) extends Engine
+    $customEngine = new class($steps) extends Engine
     {
         /** @var array<int, StepContract> */
         private array $recordedSteps = [];

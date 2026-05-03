@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Livewire\Tables\Core\Pipeline;
 
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Tables\Core\Contracts\ColumnContract;
 use Livewire\Tables\Core\Contracts\StateContract;
 use Livewire\Tables\Core\Contracts\StepContract;
 
 final class SortStep implements StepContract
 {
-    /** @var array<string, \Livewire\Tables\Core\Contracts\ColumnContract> */
+    /** @var array<string, ColumnContract> */
     private readonly array $columnMap;
 
     public function __construct(

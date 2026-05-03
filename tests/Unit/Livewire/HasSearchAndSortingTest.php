@@ -13,19 +13,23 @@ function makeSearchActor(): object
         use HasSearch;
 
         public string $tableKey = 'test';
+
         public array $tableFilters = [];
+
         public int $deselectAllCalled = 0;
+
         public int $resetPageCalled = 0;
+
         public array $dispatched = [];
 
         public function deselectAll(): void
         {
-            ++$this->deselectAllCalled;
+            $this->deselectAllCalled++;
         }
 
         public function resetPage(): void
         {
-            ++$this->resetPageCalled;
+            $this->resetPageCalled++;
         }
 
         public function dispatchFiltersChanged(): void
@@ -42,12 +46,14 @@ function makeSearchActor(): object
 
 function makeSortingActor(array $columns): object
 {
-    return new class ($columns)
+    return new class($columns)
     {
         use HasSorting;
 
         public string $defaultSortDirection = 'asc';
+
         private array $columnDefs;
+
         public int $resetPageCalled = 0;
 
         public function __construct(array $columns)
@@ -62,7 +68,7 @@ function makeSortingActor(array $columns): object
 
         public function resetPage(): void
         {
-            ++$this->resetPageCalled;
+            $this->resetPageCalled++;
         }
     };
 }

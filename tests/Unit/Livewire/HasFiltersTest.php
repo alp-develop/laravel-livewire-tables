@@ -2,24 +2,29 @@
 
 declare(strict_types=1);
 
-use Livewire\Tables\Filters\SelectFilter;
-use Livewire\Tables\Filters\TextFilter;
 use Livewire\Tables\Filters\DateRangeFilter;
 use Livewire\Tables\Filters\MultiDateFilter;
 use Livewire\Tables\Filters\NumberRangeFilter;
+use Livewire\Tables\Filters\SelectFilter;
+use Livewire\Tables\Filters\TextFilter;
 use Livewire\Tables\Livewire\Concerns\HasFilters;
 
 function makeFiltersActor(array $filters): object
 {
-    return new class ($filters)
+    return new class($filters)
     {
         use HasFilters;
 
         public string $tableKey = 'test-table';
+
         public string $search = '';
+
         private array $filterDefinitions;
+
         public array $dispatched = [];
+
         public int $deselectAllCalled = 0;
+
         public int $resetPageCalled = 0;
 
         public function __construct(array $filters)
@@ -34,12 +39,12 @@ function makeFiltersActor(array $filters): object
 
         public function deselectAll(): void
         {
-            ++$this->deselectAllCalled;
+            $this->deselectAllCalled++;
         }
 
         public function resetPage(): void
         {
-            ++$this->resetPageCalled;
+            $this->resetPageCalled++;
         }
 
         public function dispatch(string $event, mixed ...$args): void

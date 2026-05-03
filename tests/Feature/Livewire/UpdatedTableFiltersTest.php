@@ -55,9 +55,7 @@ class FilterUpdateTable extends DataTableComponent
         return [];
     }
 
-    public function configure(): void
-    {
-    }
+    public function configure(): void {}
 }
 
 class DependentFilterTable extends DataTableComponent
@@ -93,9 +91,7 @@ class DependentFilterTable extends DataTableComponent
         return [];
     }
 
-    public function configure(): void
-    {
-    }
+    public function configure(): void {}
 }
 
 beforeEach(function (): void {

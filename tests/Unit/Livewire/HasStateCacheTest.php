@@ -6,7 +6,7 @@ use Livewire\Tables\Livewire\Concerns\HasStateCache;
 
 function makeStateCacheActor(string $key = ''): object
 {
-    return new class ($key)
+    return new class($key)
     {
         use HasStateCache;
 

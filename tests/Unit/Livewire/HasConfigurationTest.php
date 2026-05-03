@@ -150,9 +150,12 @@ test('isTailwind returns true for tailwind theme', function (): void {
 });
 
 test('isBootstrap5 returns true for bootstrap5 theme', function (): void {
-    $actor = new class {
+    $actor = new class
+    {
         use HasConfiguration;
+
         public string $tableTheme = 'bootstrap5';
+
         public function callSet(string $method, mixed ...$args): static
         {
             return $this->{$method}(...$args);

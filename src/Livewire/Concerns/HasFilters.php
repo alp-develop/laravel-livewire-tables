@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Livewire\Tables\Livewire\Concerns;
 
+use Livewire\Tables\Core\Contracts\FilterContract;
 use Livewire\Tables\Filters\SelectFilter;
 
 /**
@@ -17,10 +18,10 @@ trait HasFilters
     /** @var array<string, mixed> */
     public array $tableFilters = [];
 
-    /** @var array<int, \Livewire\Tables\Core\Contracts\FilterContract>|null */
+    /** @var array<int, FilterContract>|null */
     private ?array $cachedFilters = null;
 
-    /** @return array<int, \Livewire\Tables\Core\Contracts\FilterContract> */
+    /** @return array<int, FilterContract> */
     protected function resolveFilters(): array
     {
         if ($this->cachedFilters === null) {

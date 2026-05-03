@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Livewire\Tables\Core\Pipeline;
 
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Tables\Core\Contracts\FilterContract;
 use Livewire\Tables\Core\Contracts\StateContract;
 use Livewire\Tables\Core\Contracts\StepContract;
 
 final class FilterStep implements StepContract
 {
-    /** @var array<string, \Livewire\Tables\Core\Contracts\FilterContract> */
+    /** @var array<string, FilterContract> */
     private readonly array $filterMap;
 
     public function __construct(

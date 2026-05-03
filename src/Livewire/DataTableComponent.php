@@ -51,6 +51,7 @@ abstract class DataTableComponent extends Component
 
         return $this->cachedThemeManager;
     }
+
     use HasBulkActions;
     use HasColumns;
     use HasConfiguration;
