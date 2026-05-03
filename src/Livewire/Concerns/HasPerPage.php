@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Livewire\Tables\Livewire\Concerns;
 
+/**
+ * @requires HasConfiguration  (defaultPerPage, perPageOptions)
+ * @requires HasBulkActions    (deselectAll)
+ * @requires \Livewire\WithPagination  (resetPage)
+ */
 trait HasPerPage
 {
     public int $perPage = 10;

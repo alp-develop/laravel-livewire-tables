@@ -195,4 +195,11 @@ abstract class Filter implements FilterContract
     abstract public function type(): string;
 
     abstract public function apply(Builder $query, mixed $value): Builder;
+
+    public function run(Builder $query, mixed $value): Builder
+    {
+        return $this->hasFilter()
+            ? $this->applyFilter($query, $value)
+            : $this->apply($query, $value);
+    }
 }

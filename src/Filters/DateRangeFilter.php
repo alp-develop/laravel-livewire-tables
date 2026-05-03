@@ -131,7 +131,7 @@ final class DateRangeFilter extends Filter
             $parsed = $this->dateFormat !== 'Y-m-d'
                 ? Carbon::createFromFormat($this->dateFormat, $value[$key])
                 : null;
-            $normalized = $parsed !== null ? $parsed->format('Y-m-d') : $value[$key];
+            $normalized = ($parsed instanceof Carbon) ? $parsed->format('Y-m-d') : $value[$key];
 
             if ($this->minDateValue !== null && $normalized < $this->minDateValue) {
                 $normalized = $this->minDateValue;

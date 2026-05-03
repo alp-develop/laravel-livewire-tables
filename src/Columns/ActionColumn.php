@@ -93,7 +93,11 @@ final class ActionColumn extends Column
             }
 
             $wireAction = htmlspecialchars((string) ($action['action'])($row, $table), ENT_QUOTES, 'UTF-8');
-            $icon = $action['icon'] ?? '';
+            $rawIcon = (string) ($action['icon'] ?? '');
+            $icon = (string) preg_replace('/<script\b[^>]*>.*?<\/script>/is', '', $rawIcon);
+            $icon = (string) preg_replace('/<(iframe|frame|object|embed|form|meta|link|base|style)\b[^>]*(?:>.*?<\/\1>|\/?>)/is', '', $icon);
+            $icon = (string) preg_replace('/\s+on\w+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]*)/i', '', $icon);
+            $icon = (string) preg_replace('/\b(href|src|action|formaction|xlink:href)\s*=\s*["\']?\s*(?:javascript|vbscript|data\s*:)[^"\'>\s]*/i', '', $icon);
             $class = htmlspecialchars($action['class'], ENT_QUOTES, 'UTF-8');
             $label = e($action['label']);
 

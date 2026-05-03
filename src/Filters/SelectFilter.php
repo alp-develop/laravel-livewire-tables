@@ -58,6 +58,9 @@ final class SelectFilter extends Filter
         return $this->parentField;
     }
 
+    /** @var array<string, array<string, string>> */
+    private array $resolvedOptionsCache = [];
+
     /** @return array<string, string> */
     public function resolveOptions(mixed $value): array
     {
@@ -65,7 +68,9 @@ final class SelectFilter extends Filter
             return [];
         }
 
-        return ($this->parentFilterCallback)($value);
+        $cacheKey = (string) $value;
+
+        return $this->resolvedOptionsCache[$cacheKey] ??= ($this->parentFilterCallback)($value);
     }
 
     public function multiple(): static
@@ -103,9 +108,9 @@ final class SelectFilter extends Filter
             return $value;
         }
 
-        $valid = array_keys($this->selectOptions);
+        $valid = array_map('strval', array_keys($this->selectOptions));
 
-        return array_values(array_filter($value, fn ($v) => in_array($v, $valid, true)));
+        return array_values(array_filter($value, fn ($v) => in_array((string) $v, $valid, true)));
     }
 
     public function apply(Builder $query, mixed $value): Builder
@@ -115,7 +120,18 @@ final class SelectFilter extends Filter
                 return $query;
             }
 
+            $valid = array_map('strval', array_keys($this->selectOptions));
+            $value = array_values(array_filter($value, fn ($v) => in_array((string) $v, $valid, true)));
+
+            if (count($value) === 0) {
+                return $query;
+            }
+
             return $query->whereIn($this->fieldName, $value);
+        }
+
+        if (count($this->selectOptions) > 0 && ! array_key_exists((string) $value, $this->selectOptions)) {
+            return $query;
         }
 
         return $query->where($this->fieldName, $value);

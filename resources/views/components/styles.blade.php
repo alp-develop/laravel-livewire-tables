@@ -1,12 +1,13 @@
+@php $sc = static fn(string $v): string => preg_match('/^[a-zA-Z0-9#(). ,%\-\/]+$/', $v) ? $v : ''; @endphp
 <style>
     :root {
-        --lt-primary-50: {{ config('livewire-tables.colors.50', '#f0fdfa') }};
-        --lt-primary-100: {{ config('livewire-tables.colors.100', '#ccfbf1') }};
-        --lt-primary-200: {{ config('livewire-tables.colors.200', '#99f6e4') }};
-        --lt-primary-400: {{ config('livewire-tables.colors.400', '#2dd4bf') }};
-        --lt-primary-500: {{ config('livewire-tables.colors.500', '#14b8a6') }};
-        --lt-primary-600: {{ config('livewire-tables.colors.600', '#0d9488') }};
-        --lt-primary-700: {{ config('livewire-tables.colors.700', '#0f766e') }};
+        --lt-primary-50: {{ $sc(config('livewire-tables.colors.50', '#f0fdfa')) }};
+        --lt-primary-100: {{ $sc(config('livewire-tables.colors.100', '#ccfbf1')) }};
+        --lt-primary-200: {{ $sc(config('livewire-tables.colors.200', '#99f6e4')) }};
+        --lt-primary-400: {{ $sc(config('livewire-tables.colors.400', '#2dd4bf')) }};
+        --lt-primary-500: {{ $sc(config('livewire-tables.colors.500', '#14b8a6')) }};
+        --lt-primary-600: {{ $sc(config('livewire-tables.colors.600', '#0d9488')) }};
+        --lt-primary-700: {{ $sc(config('livewire-tables.colors.700', '#0f766e')) }};
         /* Chrome — light mode base */
         --lt-bg: #ffffff;
         --lt-bg-card: #ffffff;
@@ -47,6 +48,8 @@
     .lt-checkbox:focus{outline:2px solid var(--lt-primary-500);outline-offset:2px;box-shadow:0 0 0 3px var(--lt-primary-100)!important}
     /* Column dropdown item hover */
     label:has(.lt-checkbox):hover{background-color:var(--lt-primary-50)!important;cursor:pointer}
+    /* Bulk dropdown item hover */
+    .lt-bulk-dropdown-item:hover{background-color:var(--lt-opt-hover)!important;color:var(--lt-opt-active-text)!important;cursor:pointer}
     label:has(.lt-checkbox):hover .lt-checkbox{border-color:var(--lt-primary-400)!important}
     label:has(.lt-checkbox):hover .lt-checkbox:checked{border-color:var(--lt-primary-600)!important}
     /* Bulk action checkboxes */
@@ -154,12 +157,12 @@
     @php
         $dk = '.lt-dark';
         $dc = config('livewire-tables.dark_mode.colors', []);
-        $dBg       = $dc['bg']         ?? '#0f172a';
-        $dCard     = $dc['bg-card']    ?? '#1e293b';
-        $dSubtle   = $dc['bg-subtle']  ?? '#334155';
-        $dBorder   = $dc['border']     ?? '#334155';
-        $dText     = $dc['text']       ?? '#f1f5f9';
-        $dMuted    = $dc['text-muted'] ?? '#94a3b8';
+        $dBg       = $sc($dc['bg']         ?? '#0f172a');
+        $dCard     = $sc($dc['bg-card']    ?? '#1e293b');
+        $dSubtle   = $sc($dc['bg-subtle']  ?? '#334155');
+        $dBorder   = $sc($dc['border']     ?? '#334155');
+        $dText     = $sc($dc['text']       ?? '#f1f5f9');
+        $dMuted    = $sc($dc['text-muted'] ?? '#94a3b8');
     @endphp
 
     /* ── Variable overrides ── */
@@ -303,4 +306,5 @@
     {{ $dk }} .flatpickr-day.prevMonthDay,{{ $dk }} .flatpickr-day.nextMonthDay{color:var(--lt-text-muted)!important}
     {{ $dk }} .flatpickr-current-month .flatpickr-monthDropdown-months,{{ $dk }} .flatpickr-current-month input.cur-year{color:var(--lt-text)!important}
     @endif
+    [x-cloak]{display:none!important}
 </style>

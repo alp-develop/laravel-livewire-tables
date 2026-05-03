@@ -1,3 +1,7 @@
+@once
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css" as="style" crossorigin="anonymous">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js" as="script" crossorigin="anonymous">
+@endonce
 <div
     wire:key="filter-{{ $filter->getKey() }}"
     x-data="{
@@ -12,7 +16,9 @@
             if (!document.querySelector('link[href*=\'flatpickr\']')) {
                 let link = document.createElement('link');
                 link.rel = 'stylesheet';
-                link.href = 'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css';
+                link.href = 'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css';
+                link.integrity = 'sha384-RkASv+6KfBMW9eknReJIJ6b3UnjKOKC5bOUaNgIY778NFbQ8MtWq9Lr/khUgqtTt';
+                link.crossOrigin = 'anonymous';
                 document.head.appendChild(link);
             }
             let boot = () => {
@@ -67,7 +73,9 @@
             };
             if (typeof flatpickr === 'undefined') {
                 let script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/flatpickr';
+                script.src = 'https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js';
+                script.integrity = 'sha384-5JqMv4L/Xa0hfvtF06qboNdhvuYXUku9ZrhZh3bSk8VXF0A/RuSLHpLsSV9Zqhl6';
+                script.crossOrigin = 'anonymous';
                 script.onload = boot;
                 document.head.appendChild(script);
             } else {

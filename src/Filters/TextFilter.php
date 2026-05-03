@@ -15,6 +15,10 @@ final class TextFilter extends Filter
 
     public function apply(Builder $query, mixed $value): Builder
     {
-        return $query->where($this->fieldName, 'LIKE', "%{$value}%");
+        $value = mb_substr((string) $value, 0, 200);
+
+        $escaped = str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $value);
+
+        return $query->whereRaw("{$this->fieldName} LIKE ? ESCAPE '!'", ["%{$escaped}%"]);
     }
 }

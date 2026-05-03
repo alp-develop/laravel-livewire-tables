@@ -4,17 +4,27 @@ declare(strict_types=1);
 
 namespace Livewire\Tables\Livewire\Concerns;
 
+use Livewire\Attributes\Locked;
+
+/**
+ * @requires HasColumns  (resolveColumns)
+ * @requires HasFilters  (resolveFilters, tableFilters)
+ * @requires HasSearch   (search)
+ */
 trait HasBulkActions
 {
     /** @var array<int, string> */
+    #[Locked]
     public array $selectedIds = [];
 
     /** @var array<int, string> */
+    #[Locked]
     public array $excludedIds = [];
 
     /** @var array<int, string> */
     public array $pageIds = [];
 
+    #[Locked]
     public bool $selectAllPages = false;
 
     /** @return array<string, string> */

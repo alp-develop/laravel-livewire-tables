@@ -10,9 +10,20 @@ use Livewire\Tables\Core\Contracts\StepContract;
 
 final class SortStep implements StepContract
 {
+    /** @var array<string, \Livewire\Tables\Core\Contracts\ColumnContract> */
+    private readonly array $columnMap;
+
     public function __construct(
         private readonly array $columns = [],
-    ) {}
+    ) {
+        $map = [];
+        foreach ($this->columns as $column) {
+            if ($column->isSortable()) {
+                $map[$column->field()] = $column;
+            }
+        }
+        $this->columnMap = $map;
+    }
 
     public function apply(Builder $query, StateContract $state): Builder
     {
@@ -22,21 +33,14 @@ final class SortStep implements StepContract
             return $query;
         }
 
-        $columnMap = [];
-        foreach ($this->columns as $column) {
-            if ($column->isSortable()) {
-                $columnMap[$column->field()] = $column;
-            }
-        }
-
         foreach ($sortFields as $field => $direction) {
-            if (! isset($columnMap[$field])) {
+            if (! isset($this->columnMap[$field])) {
                 continue;
             }
 
             $safeField = preg_replace('/[^a-zA-Z0-9_.]/', '', $field);
 
-            if ($safeField === null || $safeField === '') {
+            if ($safeField === null || $safeField === '' || $safeField !== $field) {
                 continue;
             }
 

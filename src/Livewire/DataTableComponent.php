@@ -34,6 +34,23 @@ use Livewire\Tables\Themes\ThemeManager;
 
 abstract class DataTableComponent extends Component
 {
+    private bool $configureRan = false;
+
+    protected ?Engine $cachedEngine = null;
+
+    private ?ThemeManager $cachedThemeManager = null;
+
+    /** @var array<string, FilterContract>|null */
+    private ?array $cachedFilterMap = null;
+
+    private function getThemeManager(): ThemeManager
+    {
+        if ($this->cachedThemeManager === null) {
+            $this->cachedThemeManager = app(ThemeManager::class);
+        }
+
+        return $this->cachedThemeManager;
+    }
     use HasBulkActions;
     use HasColumns;
     use HasConfiguration;
@@ -55,13 +72,36 @@ abstract class DataTableComponent extends Component
 
     abstract public function query(): Builder;
 
+    /**
+     * Override to specify explicit SELECT columns and avoid SELECT *.
+     * Return an array of column expressions (e.g. ['id', 'name', 'email']).
+     * An empty array (default) keeps the original SELECT from query().
+     *
+     * @return array<int, string>
+     */
+    public function selectColumns(): array
+    {
+        return [];
+    }
+
     /** @return array<int, FilterContract> */
     public function filters(): array
     {
         return [];
     }
 
+    /**
+     * Called once per mount (initial page load only).
+     * Use for one-time initialization that should not repeat on subsequent Livewire requests.
+     */
     public function build(): void {}
+
+    /**
+     * Called once per Livewire request lifecycle (inside boot()).
+     * Use to set component configuration (debounce, perPage, columns, etc.).
+     * Runs before render() on every request — keep it lightweight.
+     */
+    protected function configure(): void {}
 
     public function executeBulkAction(string $action): mixed
     {
@@ -75,47 +115,63 @@ abstract class DataTableComponent extends Component
         return $result;
     }
 
-    public function getSelectedIds(): array
+    protected function getEngine(): Engine
     {
-        if (! $this->selectAllPages) {
-            return $this->selectedIds;
+        if ($this->cachedEngine === null) {
+            $columns = $this->resolveColumns();
+            $filters = $this->resolveFilters();
+            $this->cachedEngine = (new Engine(columns: $columns, filters: $filters))
+                ->addStep(new SearchStep($columns))
+                ->addStep(new FilterStep($filters))
+                ->addStep(new SortStep($columns));
         }
 
-        $columns = $this->resolveColumns();
-        $filters = $this->filters();
+        return $this->cachedEngine;
+    }
+
+    public function getSelectedIds(): array
+    {
         $state = new State(search: $this->search, filters: $this->tableFilters);
-        $query = $this->query();
-        $query = (new SearchStep($columns))->apply($query, $state);
-        $query = (new FilterStep($filters))->apply($query, $state);
+        $query = $this->getEngine()->applySteps($this->query(), $state);
 
         $keyName = $query->getModel()->getKeyName();
-        $allIds = $query->pluck($keyName)->map(fn ($id) => (string) $id)->toArray();
+        $allIds = array_map('strval', $query->pluck($keyName)->all());
 
-        return array_values(array_diff($allIds, $this->excludedIds));
+        if ($this->selectAllPages) {
+            return array_values(array_diff($allIds, $this->excludedIds));
+        }
+
+        return array_values(array_intersect($this->selectedIds, $allIds));
     }
 
     public function boot(): void
     {
+        $themeManager = $this->getThemeManager();
         if ($this->tableTheme === '') {
-            $this->tableTheme = app(ThemeManager::class)->active();
+            $this->tableTheme = $themeManager->active();
         } else {
-            app(ThemeManager::class)->use($this->tableTheme);
+            $themeManager->use($this->tableTheme);
         }
 
         if (config('livewire-tables.dark_mode.enabled', false)) {
             $selector = config('livewire-tables.dark_mode.selector', 'lt-dark');
-            $this->darkMode = (bool) session($selector, false);
+            $cookieValue = request()->cookie($selector);
+            $this->darkMode = $cookieValue !== null
+                ? filter_var($cookieValue, FILTER_VALIDATE_BOOLEAN)
+                : (bool) session($selector, false);
         }
 
         $this->loadConfiguration();
+        $this->configureRan = false;
         $this->configure();
+        $this->configureRan = true;
     }
 
     public function mount(string $tableTheme = ''): void
     {
         if ($tableTheme !== '' && $tableTheme !== $this->tableTheme) {
             $this->tableTheme = $tableTheme;
-            app(ThemeManager::class)->use($tableTheme);
+            $this->getThemeManager()->use($tableTheme);
             $this->loadConfiguration();
             $this->configure();
         }
@@ -123,7 +179,7 @@ abstract class DataTableComponent extends Component
         $this->perPage = $this->defaultPerPage;
         $this->loadStateFromCache();
 
-        foreach ($this->filters() as $filter) {
+        foreach ($this->resolveFilters() as $filter) {
             $key = $filter->getKey();
             if ($filter->hasInitialValue() && ! array_key_exists($key, $this->tableFilters)) {
                 $normalized = $filter->normalizeValue($filter->getInitialValue());
@@ -154,7 +210,7 @@ abstract class DataTableComponent extends Component
             $this->tableFilters[$filterKey] = $activeFilter->normalizeValue($this->tableFilters[$filterKey]);
         }
 
-        foreach ($this->filters() as $filter) {
+        foreach ($this->resolveFilters() as $filter) {
             if (
                 $filter instanceof SelectFilter
                 && $filter->hasDependency()
@@ -169,10 +225,9 @@ abstract class DataTableComponent extends Component
 
     public function resolveParentValue(string $parentKey): mixed
     {
-        foreach ($this->filters() as $filter) {
-            if ($filter->getKey() === $parentKey) {
-                return $this->tableFilters[$filter->getKey()] ?? '';
-            }
+        $map = $this->getFilterMap();
+        if (isset($map[$parentKey])) {
+            return $this->tableFilters[$parentKey] ?? '';
         }
 
         return $this->tableFilters[$parentKey] ?? '';
@@ -180,13 +235,20 @@ abstract class DataTableComponent extends Component
 
     public function getFilterByKey(string $key): ?FilterContract
     {
-        foreach ($this->filters() as $filter) {
-            if ($filter->getKey() === $key) {
-                return $filter;
+        return $this->getFilterMap()[$key] ?? null;
+    }
+
+    /** @return array<string, FilterContract> */
+    private function getFilterMap(): array
+    {
+        if ($this->cachedFilterMap === null) {
+            $this->cachedFilterMap = [];
+            foreach ($this->resolveFilters() as $filter) {
+                $this->cachedFilterMap[$filter->getKey()] = $filter;
             }
         }
 
-        return null;
+        return $this->cachedFilterMap;
     }
 
     /** @return array<string, mixed> */
@@ -194,7 +256,7 @@ abstract class DataTableComponent extends Component
     {
         $applied = [];
 
-        foreach ($this->filters() as $filter) {
+        foreach ($this->resolveFilters() as $filter) {
             $value = $this->tableFilters[$filter->getKey()] ?? null;
 
             if ($value === null || $value === '') {
@@ -216,7 +278,7 @@ abstract class DataTableComponent extends Component
 
     private function resolveParentFieldFromKey(string $parentKey): string
     {
-        foreach ($this->filters() as $filter) {
+        foreach ($this->resolveFilters() as $filter) {
             if ($filter->getKey() === $parentKey) {
                 return $filter->field();
             }
@@ -227,29 +289,31 @@ abstract class DataTableComponent extends Component
 
     public function render(): View
     {
-        $this->configure();
+        if (! $this->configureRan) {
+            $this->configure();
+        }
 
         $columns = $this->resolveColumns();
-        $filters = $this->filters();
-
-        $engine = new Engine(
-            columns: $columns,
-            filters: $filters,
-        );
-
-        $engine->addStep(new SearchStep($columns))
-            ->addStep(new FilterStep($filters))
-            ->addStep(new SortStep($columns));
+        $filters = $this->resolveFilters();
+        $engine = $this->getEngine();
 
         $state = new State(
             search: $this->search,
             sortFields: $this->sortFields,
             filters: $this->tableFilters,
-            perPage: $this->perPage,
+            perPage: in_array($this->perPage, $this->perPageOptions, true) ? $this->perPage : $this->defaultPerPage,
             page: $this->getPage(),
         );
 
         $query = $this->query();
+        $selectCols = $this->selectColumns();
+        if ($selectCols !== []) {
+            $query->select($selectCols);
+        }
+        $eagerRelations = $this->getEagerLoad();
+        if ($eagerRelations !== []) {
+            $query->with($eagerRelations);
+        }
         $this->onQuerying($query);
         $this->fireTableEvent('querying');
 
@@ -258,7 +322,7 @@ abstract class DataTableComponent extends Component
         $this->onQueried($rows);
         $this->fireTableEvent('queried');
 
-        $themeManager = app(ThemeManager::class);
+        $themeManager = $this->getThemeManager();
         $themeManager->use($this->tableTheme ?: $themeManager->active());
         $theme = $themeManager->resolve();
         $themeClasses = $theme->classes();
@@ -309,6 +373,7 @@ abstract class DataTableComponent extends Component
     private function buildActiveFilterChips(array $filters): array
     {
         $chips = [];
+        $parentValueMap = [];
 
         foreach ($filters as $filter) {
             $value = $this->tableFilters[$filter->getKey()] ?? null;
@@ -325,7 +390,12 @@ abstract class DataTableComponent extends Component
                 }
                 $displayValue = match ($filter->type()) {
                     'select' => ($filter instanceof SelectFilter && $filter->hasDependency())
-                        ? ($filter->resolveOptions($this->resolveParentValue($filter->getParent() ?? ''))[$value] ?? (string) $value)
+                        ? (function () use ($filter, $value, &$parentValueMap): string {
+                            $parentKey = $filter->getParent() ?? '';
+                            $parentValueMap[$parentKey] ??= $this->resolveParentValue($parentKey);
+
+                            return $filter->resolveOptions($parentValueMap[$parentKey])[$value] ?? (string) $value;
+                        })()
                         : ($filter->options()[$value] ?? (string) $value),
                     'boolean' => ((int) $value === 1)
                         ? __('livewire-tables::messages.yes')
@@ -349,18 +419,22 @@ abstract class DataTableComponent extends Component
     {
         $chips = [];
 
+        $columnByField = [];
+        foreach ($columns as $col) {
+            $columnByField[$col->field()] = $col;
+        }
+
         foreach ($this->sortFields as $field => $direction) {
-            foreach ($columns as $col) {
-                if ($col->field() === $field) {
-                    $chips[] = [
-                        'field' => $field,
-                        'label' => $col->getLabel(),
-                        'direction' => $direction,
-                        'order' => $this->getSortOrder($field),
-                    ];
-                    break;
-                }
+            if (! isset($columnByField[$field])) {
+                continue;
             }
+
+            $chips[] = [
+                'field' => $field,
+                'label' => $columnByField[$field]->getLabel(),
+                'direction' => $direction,
+                'order' => $this->getSortOrder($field),
+            ];
         }
 
         return $chips;
