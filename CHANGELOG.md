@@ -5,6 +5,66 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - 2026-05-01
+
+### Security
+
+- **IDOR in bulk actions**: `getSelectedIds()` now intersects client `selectedIds` with the live server query, preventing forged IDs from targeting unauthorized records.
+- **CSV formula injection in export headers**: Column labels now pass through `escapeCsvValue()` before `fputcsv()`.
+- **XSS in ActionColumn icon**: `<script>`, `<iframe>`, `<object>`, `<embed>`, `<form>`, `<meta>`, `<link>`, `<base>`, and `<style>` tags are stripped; `on*=` event handlers and `javascript:`/`vbscript:`/`data:` URIs in `href`/`src`/`action` attributes are also removed before rendering.
+- **DoS in DateRangeFilter**: Guard changed from `!== null` to `instanceof Carbon` — `Carbon::createFromFormat()` can return `false`, which would cause a fatal `TypeError` with the previous check.
+- **Search/TextFilter input length limit**: `$search` and `TextFilter` values are now capped at 200 characters to prevent excessive LIKE wildcard queries.
+- **`perPage` bypass**: perPage is validated against `$perPageOptions` at `State` build time in `render()`, not only in the Livewire hook.
+- **Flatpickr CDN pinned with SRI**: All three date filter views now load `flatpickr@4.6.13` with SHA-384 `integrity` and `crossorigin="anonymous"` attributes.
+- **SelectFilter out-of-allowlist values**: Single-select `apply()` now skips queries where the submitted value is not a key in `selectOptions`.
+- **CSS injection via config colors**: Color values from `config('livewire-tables.colors.*')` and dark mode overrides are validated against a safe CSS character allowlist before output inside the `<style>` tag.
+- **TOCTOU protection on bulk IDs**: `getSelectedIds()` uses `array_intersect` against the live filtered query — bulk IDs injected from the client that are not present in the current result set are silently dropped.
+- **Sort field whitelist via session**: Sort fields restored from session cache are validated against the columns defined in `columns()`, preventing injected sort fields from reaching `SortStep`.
+- **`selectedIds`, `excludedIds`, `selectAllPages` protected with `#[Locked]`**: These properties are now marked with Livewire's `#[Locked]` attribute, preventing direct client-side mutation via wire protocol.
+- **SortStep rejects malformed field names**: Fields containing characters outside `[a-zA-Z0-9_.]` are now rejected entirely instead of being silently stripped.
+
+### Performance
+
+- **Filter resolution caching**: Added `resolveFilters()` with an in-request `$cachedFilters` cache. The `filters()` method was previously called up to 5 times per Livewire request. All internal calls now go through `resolveFilters()`.
+- **FilterStep map pre-built in constructor**: `FilterStep` builds a `filterMap` keyed by filter key in its constructor — filter lookups are now O(1) instead of O(n) on every `apply()` call.
+- **SortStep map pre-built in constructor**: `SortStep` builds a `columnMap` keyed by field in its constructor — column lookups are now O(1) instead of O(n) on every `apply()` call.
+- **SearchStep searchable columns pre-computed**: Searchable columns are filtered once in the constructor via a readonly array, eliminating repeated `array_filter` on each apply.
+- **SearchStep alias map cached**: `buildAliasMap()` result is cached per instance via `$cachedAliasMap ??=` — the regex-based map is built once instead of on every search.
+- **Column caching (3-tier)**: `cachedColumns`, `cachedVisibleColumns`, and `cachedSearchableColumns` ensure `columns()` is called once per request.
+- **`getFilterByKey()` O(1) via hash map**: `DataTableComponent` builds a `$cachedFilterMap` on first call — all subsequent `getFilterByKey()` and `resolveParentValue()` lookups are O(1).
+- **HasExport reuses cached Engine**: `buildExportQuery()` now calls `$this->getEngine()->applySteps()` instead of constructing new `SearchStep`, `FilterStep`, and `SortStep` instances.
+- **`buildSortChips()` O(n) instead of O(n×m)**: Now builds a `$columnByField` map once before iterating sort fields, eliminating the inner loop.
+- **SelectFilter options cache**: `resolveOptions()` caches dependent filter callback results per value within the request lifecycle.
+- **Session dirty tracking**: `dehydrate()` compares new state against the existing session before writing, avoiding unnecessary session writes on unchanged state.
+- **Eager loading via `setEagerLoad()`**: Added `setEagerLoad(array $relations)` to `HasConfiguration`, allowing components to declare Eloquent relations to eager-load in `configure()`. Relations are applied in `render()` via `$query->with()`.
+
+### Added
+
+- **`Engine` is now non-final**: Removed `final` modifier from `Engine` to allow subclassing for custom pipeline orchestration.
+- **`getEngine()` is now `protected`**: `getEngine()` and `$cachedEngine` changed from `private` to `protected`, enabling subclasses to override the Engine instance.
+- **`setEagerLoad()` / `getEagerLoad()`**: New protected/public pair on `HasConfiguration` for declaring eager-loaded relations per component.
+
+### Fixed
+
+- **Bulk button Alpine flash**: `x-cloak` added to the bulk actions toggle container and `[x-cloak]{display:none!important}` rule added to `styles.blade.php`, preventing the button from briefly appearing with wrong CSS classes before Alpine initializes.
+
+### Tests
+
+- Added `SortStepTest`: field whitelist, regex sanitization, direction normalization.
+- Added `LikeEscapeTest` extensions: 200-char truncation, field sanitization, custom search callback truncation passthrough.
+- Added `FilterStepTest` extension: filter key whitelist validation.
+- Added `SelectFilterNormalizeTest` extensions: integer key normalization, null value, type edge cases.
+- Added `ActionColumnTest`: XSS injection rendered as escaped text, valid render.
+- Added `BladeColumnSecurityTest`: raw HTML output by design, `e()` escape pattern, unescaped developer responsibility.
+- Added `ValidationTest`: perPage bypass (2 tests), TOCTOU bulk ID protection (2 tests), sort field session injection.
+- Added `ExportSecurityTest` extension: CSV tab/CR injection.
+- Added `EngineApplyStepsTest` extension: Engine subclass extensibility.
+- Added `IntegrationTest`: search+filter combined, bulk delete with active filter, bulk delete TOCTOU with filter, sort order, selectAllPages exclusions, `getFilterByKey` lookup.
+- Added `HasConfigurationTest` (22 tests): setters/getters for CSS classes, debounce clamp, eagerLoad, perPageOptions, theme detection.
+- Added `HasFiltersTest` (19 tests): clearFilters, removeFilter for all filter types, removeFilter cascade on dependent SelectFilters, applyFilter validation, filterHasActiveValue, getFilterValue.
+- Added `UpdatedTableFiltersTest` (9 feature tests): updatedTableFilters via Livewire, selection reset, value normalization, dependent child filter clearing, clearFilters/removeFilter/applyFilter integration.
+- Added `HasSearchAndSortingTest` (18 tests): hasSearch, clearSearch, updatedSearch truncation, sortBy toggle cycle, clearSort, clearSortField, isSortedBy, getSortDirection, getSortOrder.
+
 ## [1.2.1] - 2026-04-06
 
 ### Fixed

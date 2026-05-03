@@ -115,6 +115,75 @@ ActionColumn::make()
     ->button('View', fn ($row) => "view('{$row->slug}')"),  // Safe — escaped by package
 ```
 
+## Session State Security
+
+Table state (search term, active filters, sort fields, per-page, hidden columns) is persisted in the server-side session. The package validates all state on load:
+
+- **Sort fields** are validated against `columns()` — unknown fields are discarded.
+- **Sort direction** is normalized to `asc` or `desc` — any other value defaults to `asc`.
+- **Filter keys** are validated against `filters()` — unknown keys are discarded.
+- **Hidden columns** are validated against `columns()` — unknown fields are discarded.
+
+However, **filter values are not type-normalized on load**. If your filter callback does not tolerate unexpected value types, add a type check:
+
+```php
+TextFilter::make('name')
+    ->filter(function (Builder $query, mixed $value): Builder {
+        if (! is_string($value)) {
+            return $query;
+        }
+        return $query->where('name', 'LIKE', "%{$value}%");
+    }),
+```
+
+### Bulk Actions and TOCTOU
+
+Bulk actions operate on IDs that are validated against the current result set server-side. However, **the data those IDs point to may have changed** between when the user selected them and when the action executes. Always apply your own authorization check inside bulk action methods:
+
+```php
+public function delete(): void
+{
+    $ids = $this->getSelectedIds();
+    // Validate authorization before acting
+    $items = MyModel::whereIn('id', $ids)->where('user_id', auth()->id())->get();
+    $items->each->delete();
+}
+```
+
+## Input Length Limits
+
+The package enforces a 200-character limit on **search terms** (both global search via `SearchStep` and `TextFilter` values) to prevent CPU/memory overhead from excessively long inputs.
+
+Bulk selection arrays (`$selectedIds`, `$excludedIds`) have no enforced size limit. For large datasets, add your own guard:
+
+```php
+public function deleteSelected(): void
+{
+    $ids = $this->getSelectedIds();
+    abort_if(count($ids) > 1000, 422, 'Too many rows selected for bulk action.');
+    // ...
+}
+```
+
+## Rate Limiting Export
+
+`exportCsvAuto()` streams the entire table without a built-in rate limit. Protect high-traffic tables with Laravel's rate limiter:
+
+```php
+use Illuminate\Support\Facades\RateLimiter;
+
+public function exportCsvAuto(): \Symfony\Component\HttpFoundation\StreamedResponse
+{
+    abort_unless(
+        RateLimiter::attempt('export:' . auth()->id(), 5, fn () => true, 60),
+        429,
+        'Too many export requests. Please wait before exporting again.'
+    );
+
+    return parent::exportCsvAuto();
+}
+```
+
 ## Reporting Security Issues
 
 If you discover a security vulnerability, please report it responsibly by emailing the maintainers directly instead of opening a public issue.
