@@ -95,7 +95,7 @@
             <div class="{{ $classes['toolbar-right'] }} lt-toolbar-mobile">
                 {!! $this->resolveSlot($this->toolbarRightPrepend()) !!}
                 @if($this->hasBulkActions())
-                <div wire:key="lt-bulk-toggle" class="{{ $classes['toolbar-item'] }}" x-data="{ open: false }" @click.outside="open = false">
+                <div wire:key="lt-bulk-toggle" class="{{ $classes['toolbar-item'] }}" x-data="{ open: false }" x-cloak @click.outside="open = false">
                     <button
                         @click="($wire.selectedIds.length > 0 || $wire.selectAllPages) ? open = !open : null"
                         type="button"
