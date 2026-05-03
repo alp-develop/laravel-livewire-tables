@@ -27,6 +27,8 @@ interface FilterContract
 
     public function applyFilter(Builder $query, mixed $value): Builder;
 
+    public function run(Builder $query, mixed $value): Builder;
+
     public function hasInitialValue(): bool;
 
     public function getInitialValue(): mixed;

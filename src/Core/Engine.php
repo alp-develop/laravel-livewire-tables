@@ -12,7 +12,7 @@ use Livewire\Tables\Core\Contracts\FilterContract;
 use Livewire\Tables\Core\Contracts\StateContract;
 use Livewire\Tables\Core\Contracts\StepContract;
 
-final class Engine implements EngineContract
+class Engine implements EngineContract
 {
     /** @var array<int, StepContract> */
     private array $steps = [];
@@ -28,14 +28,21 @@ final class Engine implements EngineContract
 
     public function process(Builder $query, StateContract $state): LengthAwarePaginator
     {
-        foreach ($this->steps as $step) {
-            $query = $step->apply($query, $state);
-        }
+        $query = $this->applySteps($query, $state);
 
         return $query->paginate(
             perPage: $state->perPage(),
             page: $state->page(),
         );
+    }
+
+    public function applySteps(Builder $query, StateContract $state): Builder
+    {
+        foreach ($this->steps as $step) {
+            $query = $step->apply($query, $state);
+        }
+
+        return $query;
     }
 
     public function addStep(StepContract $step): static

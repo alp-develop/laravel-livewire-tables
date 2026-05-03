@@ -6,6 +6,13 @@ namespace Livewire\Tables\Livewire\Concerns;
 
 use Livewire\Attributes\Locked;
 
+/**
+ * @requires HasColumns  (resolveColumns)
+ * @requires HasFilters  (resolveFilters, tableFilters)
+ * @requires HasSearch   (search)
+ * @requires HasSorting  (sortFields)
+ * @requires HasPerPage  (perPage)
+ */
 trait HasStateCache
 {
     #[Locked]
@@ -17,7 +24,7 @@ trait HasStateCache
             return 'lwt_'.$this->tableKey;
         }
 
-        return 'lwt_'.substr(md5(static::class), 0, 12);
+        return 'lwt_'.md5(static::class);
     }
 
     protected function loadStateFromCache(): void
@@ -48,7 +55,7 @@ trait HasStateCache
         }
 
         if (isset($state['tableFilters']) && is_array($state['tableFilters'])) {
-            $validFilterKeys = array_map(fn ($f) => $f->getKey(), $this->filters());
+            $validFilterKeys = array_map(fn ($f) => $f->getKey(), $this->resolveFilters());
             $this->tableFilters = array_intersect_key(
                 $state['tableFilters'],
                 array_flip($validFilterKeys),
@@ -78,7 +85,7 @@ trait HasStateCache
             )),
         );
 
-        $validFilterKeys = array_map(fn ($f) => $f->getKey(), $this->filters());
+        $validFilterKeys = array_map(fn ($f) => $f->getKey(), $this->resolveFilters());
         $validFilters = array_intersect_key(
             $this->tableFilters,
             array_flip($validFilterKeys),
@@ -87,15 +94,21 @@ trait HasStateCache
         $validColumnFields = array_map(fn ($c) => $c->field(), $this->resolveColumns());
         $validHidden = array_values(array_intersect($this->hiddenColumns, $validColumnFields));
 
-        session([
-            'livewire_tables.'.$this->getTableKey() => [
-                'search' => $this->search,
-                'sortFields' => $validSortFields,
-                'tableFilters' => $validFilters,
-                'perPage' => $this->perPage,
-                'hiddenColumns' => $validHidden,
-            ],
-        ]);
+        $newState = [
+            'search' => $this->search,
+            'sortFields' => $validSortFields,
+            'tableFilters' => $validFilters,
+            'perPage' => $this->perPage,
+            'hiddenColumns' => $validHidden,
+        ];
+
+        $existing = session('livewire_tables.'.$this->getTableKey(), []);
+
+        if ($existing === $newState) {
+            return;
+        }
+
+        session(['livewire_tables.'.$this->getTableKey() => $newState]);
     }
 
     public function clearStateCache(): void

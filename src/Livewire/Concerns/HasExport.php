@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace Livewire\Tables\Livewire\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
-use Livewire\Tables\Core\Pipeline\FilterStep;
-use Livewire\Tables\Core\Pipeline\SearchStep;
-use Livewire\Tables\Core\Pipeline\SortStep;
 use Livewire\Tables\Core\State;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+/**
+ * @requires HasColumns   (resolveColumns, getVisibleColumns)
+ * @requires HasFilters   (resolveFilters, tableFilters)
+ * @requires HasSearch    (search)
+ * @requires HasBulkActions (selectAllPages, selectedIds, excludedIds, getSelectedIds)
+ * @method array<int,string> selectColumns() Returns explicit SELECT columns; empty array = SELECT *
+ */
 trait HasExport
 {
     protected string $exportFilename = 'export';
@@ -49,7 +53,7 @@ trait HasExport
                 return;
             }
 
-            fputcsv($out, $headers);
+            fputcsv($out, array_map(fn ($h) => $this->escapeCsvValue((string) $h), $headers));
 
             $query->chunk($this->exportChunkSize, function ($rows) use ($out, $exportable): void {
                 foreach ($rows as $row) {
@@ -72,19 +76,26 @@ trait HasExport
 
     protected function buildExportQuery(): Builder
     {
-        $columns = $this->resolveColumns();
-        $filters = $this->filters();
         $state = new State(search: $this->search, filters: $this->tableFilters);
 
         $query = $this->query();
-        $query = (new SearchStep($columns))->apply($query, $state);
-        $query = (new FilterStep($filters))->apply($query, $state);
-        $query = (new SortStep($columns))->apply($query, $state);
+        $selectCols = $this->selectColumns();
+        if ($selectCols !== []) {
+            $query->select($selectCols);
+        }
+        $query = $this->getEngine()->applySteps($query, $state);
 
         if ($this->selectAllPages || count($this->selectedIds) > 0) {
-            $ids = $this->getSelectedIds();
+            $keyName = $query->getModel()->getKeyName();
+            $allIds = $query->pluck($keyName)->map(fn ($id) => (string) $id)->toArray();
+            $ids = $this->selectAllPages
+                ? array_values(array_diff($allIds, $this->excludedIds))
+                : array_values(array_intersect($this->selectedIds, $allIds));
             if (count($ids) > 0) {
-                $keyName = $query->getModel()->getKeyName();
+                $query = $this->query();
+                if ($selectCols !== []) {
+                    $query->select($selectCols);
+                }
                 $query->whereIn($keyName, $ids);
             }
         }

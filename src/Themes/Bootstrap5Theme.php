@@ -85,7 +85,7 @@ final class Bootstrap5Theme implements ThemeContract
             'bulk-btn-active' => 'btn lt-btn-neutral-active d-flex w-100 align-items-center justify-content-center gap-1',
             'bulk-badge' => 'badge lt-badge-primary rounded-pill fw-bold ms-1',
             'bulk-dropdown' => 'dropdown-menu show position-absolute end-0 z-3 mt-1 shadow',
-            'bulk-dropdown-item' => 'd-flex w-100 align-items-center px-3 py-2 small text-dark text-decoration-none bg-transparent border-0 text-start',
+            'bulk-dropdown-item' => 'lt-bulk-dropdown-item d-flex w-100 align-items-center px-3 py-2 small text-dark text-decoration-none bg-transparent border-0 text-start',
             'bulk-checkbox-th' => 'text-uppercase text-secondary fw-bold small',
             'bulk-checkbox-td' => '',
             'bulk-checkbox' => 'lt-bulk-checkbox mt-0 cursor-pointer',

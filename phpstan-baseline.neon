@@ -7,6 +7,18 @@ parameters:
 			path: src/Core/Contracts/EngineContract.php
 
 		-
+			message: '#^Method Livewire\\Tables\\Core\\Contracts\\EngineContract\:\:applySteps\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Core/Contracts/EngineContract.php
+
+		-
+			message: '#^Method Livewire\\Tables\\Core\\Contracts\\EngineContract\:\:applySteps\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Core/Contracts/EngineContract.php
+
+		-
 			message: '#^Method Livewire\\Tables\\Core\\Contracts\\EngineContract\:\:process\(\) return type with generic interface Illuminate\\Contracts\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
 			identifier: missingType.generics
 			count: 1
@@ -37,6 +49,30 @@ parameters:
 			path: src/Core/Contracts/FilterContract.php
 
 		-
+			message: '#^Method Livewire\\Tables\\Core\\Contracts\\FilterContract\:\:run\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Core/Contracts/FilterContract.php
+
+		-
+			message: '#^Method Livewire\\Tables\\Core\\Contracts\\FilterContract\:\:run\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Core/Contracts/FilterContract.php
+
+		-
+			message: '#^Method Livewire\\Tables\\Filters\\Filter\:\:run\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Filters/Filter.php
+
+		-
+			message: '#^Method Livewire\\Tables\\Filters\\Filter\:\:run\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Filters/Filter.php
+
+		-
 			message: '#^Method Livewire\\Tables\\Core\\Contracts\\StepContract\:\:apply\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
 			identifier: missingType.generics
 			count: 1
@@ -59,6 +95,30 @@ parameters:
 			identifier: missingType.generics
 			count: 1
 			path: src/Core/Engine.php
+
+		-
+			message: '#^Method Livewire\\Tables\\Core\\Engine\:\:applySteps\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Core/Engine.php
+
+		-
+			message: '#^Method Livewire\\Tables\\Core\\Engine\:\:applySteps\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Core/Engine.php
+
+		-
+			message: '#^Parameter \#1 \$sql of method Illuminate\\Database\\Eloquent\\Builder.*::orWhereRaw\(\) expects literal-string, non-falsy-string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Core/Pipeline/SearchStep.php
+
+		-
+			message: '#^Parameter \#1 \$sql of method Illuminate\\Database\\Eloquent\\Builder.*::whereRaw\(\) expects Illuminate\\Contracts\\Database\\Query\\Expression\|literal-string, non-falsy-string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Filters/TextFilter.php
 
 		-
 			message: '#^Method Livewire\\Tables\\Core\\Pipeline\\FilterStep\:\:__construct\(\) has parameter \$filters with no value type specified in iterable type array\.$#'

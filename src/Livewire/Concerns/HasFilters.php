@@ -6,14 +6,33 @@ namespace Livewire\Tables\Livewire\Concerns;
 
 use Livewire\Tables\Filters\SelectFilter;
 
+/**
+ * @requires HasBulkActions  (deselectAll)
+ * @requires \Livewire\WithPagination  (resetPage)
+ * @requires HasEvents  (dispatchFiltersChanged)
+ * @requires HasColumns  (resolveColumns)
+ */
 trait HasFilters
 {
     /** @var array<string, mixed> */
     public array $tableFilters = [];
 
+    /** @var array<int, \Livewire\Tables\Core\Contracts\FilterContract>|null */
+    private ?array $cachedFilters = null;
+
+    /** @return array<int, \Livewire\Tables\Core\Contracts\FilterContract> */
+    protected function resolveFilters(): array
+    {
+        if ($this->cachedFilters === null) {
+            $this->cachedFilters = $this->filters();
+        }
+
+        return $this->cachedFilters;
+    }
+
     public function applyFilter(string $field, mixed $value): void
     {
-        $validKeys = array_map(fn ($f) => $f->getKey(), $this->filters());
+        $validKeys = array_map(fn ($f) => $f->getKey(), $this->resolveFilters());
 
         if (! in_array($field, $validKeys, true)) {
             return;
@@ -27,14 +46,14 @@ trait HasFilters
 
     public function removeFilter(string $field): void
     {
-        $validKeys = array_map(fn ($f) => $f->getKey(), $this->filters());
+        $validKeys = array_map(fn ($f) => $f->getKey(), $this->resolveFilters());
 
         if (! in_array($field, $validKeys, true)) {
             return;
         }
 
         $filter = null;
-        foreach ($this->filters() as $f) {
+        foreach ($this->resolveFilters() as $f) {
             if ($f->getKey() === $field) {
                 $filter = $f;
                 break;
@@ -48,7 +67,7 @@ trait HasFilters
             default => '',
         };
 
-        foreach ($this->filters() as $f) {
+        foreach ($this->resolveFilters() as $f) {
             if ($f instanceof SelectFilter && $f->hasDependency() && $f->getParent() === $field) {
                 $this->tableFilters[$f->getKey()] = '';
             }
@@ -63,7 +82,7 @@ trait HasFilters
     public function clearFilters(): void
     {
         $resetValues = [];
-        foreach ($this->filters() as $filter) {
+        foreach ($this->resolveFilters() as $filter) {
             $resetValues[$filter->getKey()] = match ($filter->type()) {
                 'multi_select', 'multi_date' => [],
                 'date_range' => ['from' => '', 'to' => ''],

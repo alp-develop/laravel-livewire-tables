@@ -6,10 +6,20 @@ namespace Livewire\Tables\Livewire\Concerns;
 
 use Livewire\Tables\Core\Contracts\ColumnContract;
 
+/**
+ * @requires HasBulkActions  (deselectAll)
+ * @requires \Livewire\WithPagination  (resetPage)
+ */
 trait HasColumns
 {
     /** @var array<int, ColumnContract>|null */
     private ?array $cachedColumns = null;
+
+    /** @var array<int, ColumnContract>|null */
+    private ?array $cachedAllColumns = null;
+
+    /** @var array<int, ColumnContract>|null */
+    private ?array $cachedVisibleColumns = null;
 
     /** @var array<int, string> */
     public array $hiddenColumns = [];
@@ -30,30 +40,41 @@ trait HasColumns
     /** @return array<int, ColumnContract> */
     public function getAllColumns(): array
     {
-        return array_filter(
+        return $this->cachedAllColumns ??= array_values(array_filter(
             $this->resolveColumns(),
             fn (ColumnContract $column): bool => $column->isVisible() && ! $column->isHiddenIf(),
-        );
+        ));
     }
 
     /** @return array<int, ColumnContract> */
     public function getVisibleColumns(): array
     {
-        return array_filter(
-            $this->resolveColumns(),
-            fn (ColumnContract $column): bool => $column->isVisible()
-                && ! $column->isHiddenIf()
-                && ! in_array($column->field(), $this->hiddenColumns, true),
-        );
+        if ($this->cachedVisibleColumns === null) {
+            $this->cachedVisibleColumns = array_values(array_filter(
+                $this->resolveColumns(),
+                fn (ColumnContract $column): bool => $column->isVisible()
+                    && ! $column->isHiddenIf()
+                    && ! in_array($column->field(), $this->hiddenColumns, true),
+            ));
+        }
+
+        return $this->cachedVisibleColumns;
     }
+
+    /** @var array<int, ColumnContract>|null */
+    private ?array $cachedSearchableColumns = null;
 
     /** @return array<int, ColumnContract> */
     public function getSearchableColumns(): array
     {
-        return array_filter(
-            $this->resolveColumns(),
-            fn (ColumnContract $column): bool => $column->isSearchable() && ! $column->isHiddenIf(),
-        );
+        if ($this->cachedSearchableColumns === null) {
+            $this->cachedSearchableColumns = array_values(array_filter(
+                $this->resolveColumns(),
+                fn (ColumnContract $column): bool => $column->isSearchable() && ! $column->isHiddenIf(),
+            ));
+        }
+
+        return $this->cachedSearchableColumns;
     }
 
     public function toggleColumn(string $field): void

@@ -11,5 +11,7 @@ interface EngineContract
 {
     public function process(Builder $query, StateContract $state): LengthAwarePaginator;
 
+    public function applySteps(Builder $query, StateContract $state): Builder;
+
     public function addStep(StepContract $step): static;
 }

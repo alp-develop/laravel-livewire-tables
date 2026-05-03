@@ -10,9 +10,18 @@ use Livewire\Tables\Core\Contracts\StepContract;
 
 final class FilterStep implements StepContract
 {
+    /** @var array<string, \Livewire\Tables\Core\Contracts\FilterContract> */
+    private readonly array $filterMap;
+
     public function __construct(
         private readonly array $filters = [],
-    ) {}
+    ) {
+        $map = [];
+        foreach ($this->filters as $filter) {
+            $map[$filter->getKey()] = $filter;
+        }
+        $this->filterMap = $map;
+    }
 
     public function apply(Builder $query, StateContract $state): Builder
     {
@@ -20,11 +29,6 @@ final class FilterStep implements StepContract
 
         if (count($activeFilters) === 0) {
             return $query;
-        }
-
-        $filterMap = [];
-        foreach ($this->filters as $filter) {
-            $filterMap[$filter->getKey()] = $filter;
         }
 
         foreach ($activeFilters as $field => $value) {
@@ -36,14 +40,12 @@ final class FilterStep implements StepContract
                 continue;
             }
 
-            if (! isset($filterMap[$field])) {
+            if (! isset($this->filterMap[$field])) {
                 continue;
             }
 
-            $filter = $filterMap[$field];
-            $query = $filter->hasFilter()
-                ? $filter->applyFilter($query, $value)
-                : $filter->apply($query, $value);
+            $filter = $this->filterMap[$field];
+            $query = $filter->run($query, $value);
         }
 
         return $query;

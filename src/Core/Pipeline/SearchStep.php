@@ -12,31 +12,36 @@ use Livewire\Tables\Core\Contracts\StepContract;
 
 final class SearchStep implements StepContract
 {
-    public function __construct(
-        private readonly array $columns = [],
-    ) {}
+    /** @var array<int, ColumnContract> */
+    private readonly array $searchableColumns;
+
+    /** @var array<string, string>|null */
+    private ?array $cachedAliasMap = null;
+
+    public function __construct(array $columns = [])
+    {
+        $this->searchableColumns = array_values(array_filter(
+            $columns,
+            fn (ColumnContract $column): bool => $column->isSearchable(),
+        ));
+    }
 
     public function apply(Builder $query, StateContract $state): Builder
     {
-        $search = trim($state->search());
+        $search = mb_substr(trim($state->search()), 0, 200);
 
         if ($search === '') {
             return $query;
         }
 
-        $searchableColumns = array_filter(
-            $this->columns,
-            fn (ColumnContract $column): bool => $column->isSearchable(),
-        );
-
-        if (count($searchableColumns) === 0) {
+        if (count($this->searchableColumns) === 0) {
             return $query;
         }
 
-        $aliasMap = $this->buildAliasMap($query);
+        $aliasMap = $this->cachedAliasMap ??= $this->buildAliasMap($query);
 
-        return $query->where(function (Builder $query) use ($searchableColumns, $search, $aliasMap): void {
-            foreach ($searchableColumns as $column) {
+        return $query->where(function (Builder $query) use ($search, $aliasMap): void {
+            foreach ($this->searchableColumns as $column) {
                 if ($column instanceof SearchableContract) {
                     $callback = $column->getSearchCallback();
 
@@ -87,6 +92,8 @@ final class SearchStep implements StepContract
             return;
         }
 
-        $query->orWhere($safeField, 'LIKE', "%{$search}%");
+        $escaped = str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $search);
+
+        $query->orWhereRaw("{$safeField} LIKE ? ESCAPE '!'", ["%{$escaped}%"]);
     }
 }
